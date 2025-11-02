@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62b8117e07ccc34dab99632d4efb1c7, type: 3}
   m_Name: BuildingData
   m_EditorClassIdentifier: 
-  buildingName: Cube
-  prefab: {fileID: 7930938037055440271, guid: 8e0a826bd78680240ad8c3f1bbca3614, type: 3}
+  buildingName: Farm
+  prefab: {fileID: 3200848602126888778, guid: 2871fb65e5c66f5489da36ef7482e30c, type: 3}
   size: {x: 1, y: 1}
