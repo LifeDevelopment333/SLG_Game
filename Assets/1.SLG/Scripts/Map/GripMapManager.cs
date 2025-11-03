@@ -23,7 +23,6 @@ public class GridMapManager : MonoBehaviour
             }
         }
     }
-    // 안녕하세요
 
     public Vector3 GridToWorld(Vector2Int gridPos)
     {
