@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b62b8117e07ccc34dab99632d4efb1c7, type: 3}
-  m_Name: BuildingData
+  m_Script: {fileID: 11500000, guid: 27ccaff4facccf94cae5640eb6db4571, type: 3}
+  m_Name: Archery
   m_EditorClassIdentifier: 
-  buildingName: Farm
+  buildingName: Archery
+  description: "\uC544\uCC98 \uAC74\uBB3C"
+  type: 1
   prefab: {fileID: 7757314567541596192, guid: cdc5f0e75b9cf934d8d03e0a45c0c526, type: 3}
   size: {x: 1, y: 1}

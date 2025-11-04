@@ -30,10 +30,14 @@ namespace SLG.Builder
             {
                 Vector2Int coordinate = GridManager.Instance.WorldToGrid(hit.point);
                 Vector3 MouseOnPosition = GridManager.Instance.GridToWorld(coordinate);
+                if(MouseOnPosition == Vector3.zero)
+                {
+                    MouseOnPosition = hit.point;
+                }
 
                 if (previewObject == null)
                 {
-                    previewObject = Instantiate(selectBuilding.prefab);
+                    previewObject = Instantiate(selectBuilding.Prefab);
                     previewRenderer = previewObject.GetComponentInChildren<Renderer>();
                     SetPreviewMaterialColor(Color.green);
                 }
@@ -44,10 +48,16 @@ namespace SLG.Builder
 
                 if (Input.GetMouseButtonDown(0) && canBuild)
                 {
-                    GameObject building = Instantiate(selectBuilding.prefab);
+                    GameObject building = Instantiate(selectBuilding.Prefab);
                     building.transform.position = MouseOnPosition;
+                    GridManager.Instance.CreateBuilding(coordinate);
                 }
             }
+        }
+
+        public void SelectBuilding(BuildingData data)
+        {
+            selectBuilding = data;
         }
 
         void SetPreviewMaterialColor(Color color)

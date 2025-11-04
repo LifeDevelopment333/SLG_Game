@@ -8,7 +8,8 @@ namespace SLG.Builder
         private static GridManager instance;
         public static GridManager Instance => instance;
 
-        [SerializeField] private Transform CenterPoint;
+        [SerializeField] private Transform CenterPointObject;
+        private Vector3 originPoint;
         private GridCell[,] cells;
 
         [Header("격자 옵션")]
@@ -36,13 +37,13 @@ namespace SLG.Builder
         /// </summary>
         void CreateGrid()
         {
-            Vector3 originPoint = Vector3.zero;
-            if (CenterPoint != null)
+            originPoint = Vector3.zero;
+            if (CenterPointObject != null)
             {
                 originPoint = new Vector3(
-                    CenterPoint.position.x - (width * cellSize) / 2f,
-                    CenterPoint.position.y,
-                    CenterPoint.position.z - (height * cellSize) / 2f
+                    CenterPointObject.position.x - (width * cellSize) / 2f,
+                    CenterPointObject.position.y,
+                    CenterPointObject.position.z - (height * cellSize) / 2f
                     );
             }
 
@@ -82,11 +83,10 @@ namespace SLG.Builder
         /// </summary>
         public Vector2Int WorldToGrid(Vector3 worldPos)
         {
-            Debug.Log(worldPos);
             // 월드 좌표를 그리드 좌표로 변환하는 로직
-            int gridX = Mathf.FloorToInt((worldPos.x - CenterPoint.position.x) / cellSize) + width / 2;
-            int gridY = Mathf.FloorToInt((worldPos.z - CenterPoint.position.z) / cellSize) + height / 2;
-            Debug.Log(gridX + " " + gridY);                  
+            int gridX = Mathf.FloorToInt((worldPos.x - originPoint.x) / cellSize);
+            int gridY = Mathf.FloorToInt((worldPos.z - originPoint.z) / cellSize);
+            Debug.Log($"그리드 좌표 : {gridX} : {gridY}");
 
             return new Vector2Int(gridX, gridY);
         }
@@ -107,17 +107,12 @@ namespace SLG.Builder
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            // 센터 포인트 표시
-            if (CenterPoint != null)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(CenterPoint.position, 0.2f);
-            }
-
             if(cells == null)
             {
                 CreateGrid();
             }
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(originPoint, 0.2f);
 
             Gizmos.color = Color.white;
             foreach (GridCell cell in cells)
