@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace SLG.Builder
@@ -10,8 +11,10 @@ namespace SLG.Builder
         [SerializeField] private Transform CenterPoint;
         private GridCell[,] cells;
 
+        [Header("격자 옵션")]
         public int width = 10;
         public int height = 10;
+        public int cellSize = 1;
 
         private void Awake()
         {
@@ -21,66 +24,107 @@ namespace SLG.Builder
         }
 
         /// <summary>
+        /// 격자 재생성
+        /// </summary>
+        public void ReCreateGrid()
+        {
+            CreateGrid();
+        }
+
+        /// <summary>
         /// 격자 그리드 생성
         /// </summary>
         void CreateGrid()
         {
-            Vector2 originPoint = new Vector3(0, 0);
+            Vector3 originPoint = Vector3.zero;
             if (CenterPoint != null)
             {
-                originPoint = new Vector2(CenterPoint.position.x - (width / 2), CenterPoint.position.z - (height / 2));
+                originPoint = new Vector3(
+                    CenterPoint.position.x - (width * cellSize) / 2f,
+                    CenterPoint.position.y,
+                    CenterPoint.position.z - (height * cellSize) / 2f
+                    );
             }
 
-            cells = new GridCell[10, 10];
+            cells = new GridCell[width, height];
+
             for(int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
                     cells[x, y] = new GridCell
                     {
-                        GridPosition = new Vector2(originPoint.x + x, originPoint.y + y),
+                        GridPosition = new Vector3(
+                            originPoint.x + (x * cellSize) + (cellSize / 2f),
+                            originPoint.y,
+                            originPoint.z + (y * cellSize) + (cellSize / 2f)
+                            ),
                         isOccupied = false
                     };
                 }
             }
         }
 
-        public void GridToWorld()
+        /// <summary>
+        /// 그리드 좌표를 월드 포지션으로
+        /// </summary>
+        public Vector3 GridToWorld(Vector2Int gridPos)
         {
+            if(cells == null || cells.Length == 0) return Vector3.zero;
+            if (gridPos.x >= width || gridPos.y >= height || gridPos.x < 0 || gridPos.y < 0) return Vector3.zero;
 
+            // 그리드 좌표를 월드 좌표로 변환하는 로직
+            return cells[gridPos.x, gridPos.y].GridPosition;
         }
 
-        public void WorldToGrid()
+        /// <summary>
+        /// 월드 좌표를 그리드 좌표로
+        /// </summary>
+        public Vector2Int WorldToGrid(Vector3 worldPos)
         {
+            Debug.Log(worldPos);
+            // 월드 좌표를 그리드 좌표로 변환하는 로직
+            int gridX = Mathf.FloorToInt((worldPos.x - CenterPoint.position.x) / cellSize) + width / 2;
+            int gridY = Mathf.FloorToInt((worldPos.z - CenterPoint.position.z) / cellSize) + height / 2;
+            Debug.Log(gridX + " " + gridY);                  
 
+            return new Vector2Int(gridX, gridY);
+        }
+
+        public bool CanBuild(Vector2Int gridPos)
+        {
+            if (cells == null || cells.Length == 0) return false;
+            if (gridPos.x >= width || gridPos.y >= height || gridPos.x < 0 || gridPos.y < 0) return false;
+
+            return !cells[gridPos.x, gridPos.y].isOccupied;
+        }
+
+        public void CreateBuilding(Vector2Int gridPos)
+        {
+            cells[gridPos.x, gridPos.y].isOccupied = true;
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.green;
-
-            // 그리드 데이터가 없으면 미리보기용 간이 계산
-            float startX = CenterPoint != null ? CenterPoint.position.x - (width / 2f) : 0f;
-            float startZ = CenterPoint != null ? CenterPoint.position.z - (height / 2f) : 0f;
-
-            // 셀 크기 = 1단위로 가정 (필요하면 CellSize 추가)
-            float cellSize = 1f;
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Vector3 cellCenter = new Vector3(startX + x + 0.5f, 0, startZ + y + 0.5f);
-                    Gizmos.DrawWireCube(cellCenter, new Vector3(cellSize, 0, cellSize));
-                }
-            }
-
             // 센터 포인트 표시
             if (CenterPoint != null)
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawSphere(CenterPoint.position, 0.2f);
+            }
+
+            if(cells == null)
+            {
+                CreateGrid();
+            }
+
+            Gizmos.color = Color.white;
+            foreach (GridCell cell in cells)
+            {
+                Gizmos.DrawWireCube(cell.GridPosition, new Vector3(cellSize, 0, cellSize));
+                //Gizmos.DrawSphere(cell.GridPosition, 0.05f);
+                //Gizmos.DrawSphere(cells[0,0].GridPosition, 0.05f);
             }
         }
 #endif
@@ -88,7 +132,7 @@ namespace SLG.Builder
 
     public struct GridCell
     {
-        public Vector2 GridPosition;
+        public Vector3 GridPosition;
         public bool isOccupied;
     }
 }
