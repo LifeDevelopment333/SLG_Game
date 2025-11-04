@@ -7,6 +7,8 @@ namespace SLG.Builder
         private static BuildManager instance;
         public static BuildManager Instance => instance;
 
+        [SerializeField] private Material previewMaterial;
+
         private Camera cam;
         private RaycastHit hit;
         private GameObject previewObject;
@@ -43,14 +45,14 @@ namespace SLG.Builder
                 }
                 previewObject.transform.position = MouseOnPosition;
 
-                bool canBuild = GridManager.Instance.CanBuild(coordinate);
+                bool canBuild = GridManager.Instance.CanBuild(coordinate, selectBuilding.Size);
                 SetPreviewMaterialColor(canBuild ? Color.green : Color.red);
 
                 if (Input.GetMouseButtonDown(0) && canBuild)
                 {
                     GameObject building = Instantiate(selectBuilding.Prefab);
                     building.transform.position = MouseOnPosition;
-                    GridManager.Instance.CreateBuilding(coordinate);
+                    GridManager.Instance.CreateBuilding(coordinate, selectBuilding.Size);
                 }
             }
         }
@@ -64,10 +66,9 @@ namespace SLG.Builder
         {
             if (previewRenderer != null)
             {
-                foreach (var mat in previewRenderer.materials)
-                {
-                    mat.color = color;
-                }
+                previewRenderer.material = previewMaterial;
+                previewRenderer.material.SetColor("_TintColor", color);
+                previewRenderer.material.SetFloat("_Alpha", 0.5f);
             }
         }
     }

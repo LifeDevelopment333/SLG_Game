@@ -91,26 +91,42 @@ namespace SLG.Builder
             return new Vector2Int(gridX, gridY);
         }
 
-        public bool CanBuild(Vector2Int gridPos)
+        public bool CanBuild(Vector2Int gridPos, Vector2Int buildSize)
         {
             if (cells == null || cells.Length == 0) return false;
             if (gridPos.x >= width || gridPos.y >= height || gridPos.x < 0 || gridPos.y < 0) return false;
 
-            return !cells[gridPos.x, gridPos.y].isOccupied;
+            for(int x = 0; x < buildSize.x; x++)
+            {
+                for(int y = 0; y < buildSize.y; y++)
+                {
+                    if (gridPos.x + x >= width || gridPos.y + y >= height) return false;
+                    if (cells[gridPos.x + x, gridPos.y + y].isOccupied) return false;
+                }
+            }
+
+            return true;
         }
 
-        public void CreateBuilding(Vector2Int gridPos)
+        public void CreateBuilding(Vector2Int gridPos, Vector2Int buildSize)
         {
-            cells[gridPos.x, gridPos.y].isOccupied = true;
+            for(int x = 0; x < buildSize.x; x++)
+            {
+                for(int y = 0; y < buildSize.y; y++)
+                {
+                    cells[gridPos.x + x, gridPos.y + y].isOccupied = true;
+                }
+            }
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if(cells == null)
+            if(cells == null || cells.Length == 0)
             {
                 CreateGrid();
             }
+
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(originPoint, 0.2f);
 

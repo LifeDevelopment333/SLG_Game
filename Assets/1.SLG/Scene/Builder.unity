@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff0ce04dbd9ef3408c2f6ca8291f053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  previewMaterial: {fileID: 2100000, guid: 02f14acd82fc2ed4e92be22148488266, type: 2}
   selectBuilding: {fileID: 11400000, guid: 352b31d467731654daa07a1c1dde7e13, type: 2}
   isBuilder: 1
 --- !u!4 &574775752
@@ -197,7 +198,7 @@ MonoBehaviour:
   CenterPointObject: {fileID: 1785153302}
   width: 10
   height: 10
-  cellSize: 5
+  cellSize: 4
 --- !u!4 &657900558
 Transform:
   m_ObjectHideFlags: 0
