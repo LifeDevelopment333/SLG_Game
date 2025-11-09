@@ -521,6 +521,9 @@ MonoBehaviour:
   width: 10
   height: 10
   cellSize: 6
+  canBuildColor: {r: 0, g: 1, b: 0, a: 0.41568628}
+  cannotBuildColor: {r: 1, g: 0, b: 0, a: 0.49019608}
+  isDebugMode: 1
 --- !u!4 &657900558
 Transform:
   m_ObjectHideFlags: 0

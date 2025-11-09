@@ -46,6 +46,7 @@ namespace SLG.Builder
                 previewObject.transform.position = MouseOnPosition;
 
                 bool canBuild = GridManager.Instance.CanBuild(coordinate, selectBuilding.Size);
+                GridManager.Instance.HighlightBuild(coordinate, selectBuilding.Size, canBuild);
                 SetPreviewMaterialColor(canBuild ? Color.green : Color.red);
 
                 // 건물 생성
@@ -65,6 +66,9 @@ namespace SLG.Builder
             selectBuilding = data;
         }
 
+        /// <summary>
+        /// 건물 프리뷰
+        /// </summary>
         void SetPreviewMaterialColor(Color color)
         {
             if (previewRenderer != null)
