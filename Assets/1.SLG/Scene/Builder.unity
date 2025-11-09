@@ -150,6 +150,78 @@ Transform:
   m_Children: []
   m_Father: {fileID: 657900558}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &131760475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 131760477}
+  - component: {fileID: 131760476}
+  m_Layer: 0
+  m_Name: RTSController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &131760476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131760475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e017cdcc9a206e94c9d5e1a8f589c9dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fastKey: 304
+  rotateMouseButton: 1
+  panMouseButton: 2
+  moveSpeed: 30
+  fastMultiplier: 2.5
+  edgePanSpeed: 52.1
+  zoomSpeed: 200
+  minZoomDistance: 5
+  maxZoomDistance: 80
+  rotateSpeed: 300
+  minPitch: 15
+  maxPitch: 80
+  panDragSpeed: 10
+  useEdgePan: 0
+  edgeThickness: 10
+  useBounds: 0
+  moveBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 100, y: 100, z: 100}
+  keepMinHeightOverGround: 0
+  minHeightOverGround: 3
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1
+  pivot: {fileID: 131760477}
+  cameraRig: {fileID: 1109502446}
+  smoothTime: 0.08
+--- !u!4 &131760477
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131760475}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1109502446}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &266153644
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,7 +901,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 131760477}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1109502447
 MonoBehaviour:
@@ -1430,7 +1502,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1109502446}
+  - {fileID: 131760477}
   - {fileID: 1131094420}
   - {fileID: 657900558}
   - {fileID: 574775752}

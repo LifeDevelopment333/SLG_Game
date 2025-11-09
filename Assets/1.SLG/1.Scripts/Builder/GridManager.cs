@@ -121,7 +121,6 @@ namespace SLG.Builder
             // 월드 좌표를 그리드 좌표로 변환하는 로직
             int gridX = Mathf.FloorToInt((worldPos.x - originPoint.x) / cellSize);
             int gridY = Mathf.FloorToInt((worldPos.z - originPoint.z) / cellSize);
-            Debug.Log($"그리드 좌표 : {gridX} : {gridY}");
 
             return new Vector2Int(gridX, gridY);
         }
