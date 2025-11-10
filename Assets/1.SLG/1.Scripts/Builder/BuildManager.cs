@@ -14,8 +14,8 @@ namespace SLG.Builder
         private RaycastHit hit;
         private GameObject previewObject;
         private Renderer previewRenderer;
+        private BuildingData selectBuilding;
 
-        public BuildingData selectBuilding;
         public bool isBuilder;
 
         private void Awake()
@@ -42,6 +42,7 @@ namespace SLG.Builder
 
                 if (previewObject == null)
                 {
+                    Debug.Log("Create Preview Object");
                     previewObject = Instantiate(selectBuilding.Prefab);
                     previewRenderer = previewObject.GetComponentInChildren<Renderer>();
                     SetPreviewMaterialColor(Color.green);
@@ -67,7 +68,11 @@ namespace SLG.Builder
         /// </summary>
         public void SelectBuilding(BuildingData data)
         {
+            if (selectBuilding == data) return;
+
+            Debug.Log("Select Building: " + data.name);
             selectBuilding = data;
+            DestroyImmediate(previewObject);
         }
 
         /// <summary>

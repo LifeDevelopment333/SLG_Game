@@ -44,5 +44,17 @@ namespace SLG.Builder
             }
             return names;
         }
+
+        public BuildingData GetBuildingDataByName(string name)
+        {
+            foreach (var data in dataList)
+            {
+                if (data.name == name)
+                {
+                    return data;
+                }
+            }
+            return null;
+        }
     }
 }
