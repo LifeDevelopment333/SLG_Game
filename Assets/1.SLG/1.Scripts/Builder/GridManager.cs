@@ -125,6 +125,9 @@ namespace SLG.Builder
             return new Vector2Int(gridX, gridY);
         }
 
+        /// <summary>
+        /// 건설 가능 여부
+        /// </summary>
         public bool CanBuild(Vector2Int gridPos, Vector2Int buildSize)
         {
             if (cells == null || cells.Length == 0) return false;
@@ -159,7 +162,7 @@ namespace SLG.Builder
             }
 
             // 범위 내 타일 강조
-            Color c = canBuild ? new Color(0f, 1f, 0f, 0.4f) : new Color(1f, 0f, 0f, 0.4f);
+            Color c = canBuild ? canBuildColor : cannotBuildColor;
 
             for (int x = 0; x < buildSize.x; x++)
             {
@@ -177,6 +180,9 @@ namespace SLG.Builder
             }
         }
 
+        /// <summary>
+        /// 건물 생성 완료처리
+        /// </summary>
         public void CreatedBuilding(Vector2Int gridPos, Vector2Int buildSize)
         {
             for(int x = 0; x < buildSize.x; x++)

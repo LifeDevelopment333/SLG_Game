@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace SLG.Builder
 {
@@ -30,6 +31,8 @@ namespace SLG.Builder
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
+                if (EventSystem.current.IsPointerOverGameObject() == true) return;
+
                 Vector2Int coordinate = GridManager.Instance.WorldToGrid(hit.point);
                 Vector3 MouseOnPosition = GridManager.Instance.GridToWorld(coordinate);
                 if(MouseOnPosition == Vector3.zero)
@@ -52,7 +55,8 @@ namespace SLG.Builder
                 // 건물 생성
                 if (Input.GetMouseButtonDown(0) && canBuild)
                 {
-                    selectBuilding.CreateBuilding(MouseOnPosition);
+                    GameObject obj = selectBuilding.CreateBuilding(MouseOnPosition);
+                    obj.transform.parent = transform;
                     GridManager.Instance.CreatedBuilding(coordinate, selectBuilding.Size);
                 }
             }
