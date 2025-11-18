@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ccaff4facccf94cae5640eb6db4571, type: 3}
+  m_Name: Tile_Bot2
+  m_EditorClassIdentifier: 
+  buildingName: Tile_Bot2
+  description: "\uD759 \uD0C0\uC77C"
+  type: 0
+  prefab: {fileID: 1911000842864643869, guid: 2ce9447f3047e6a4e948a7e2280fedf5, type: 3}
+  size: {x: 1, y: 1}
