@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ccaff4facccf94cae5640eb6db4571, type: 3}
+  m_Name: Wall_B_wall
+  m_EditorClassIdentifier: 
+  buildingName: Wall_B_wall
+  description: "\uC774\uC5B4\uC9C4 \uB3CC\uBCBD"
+  type: 4
+  prefab: {fileID: 7302236744004313466, guid: 0970cb61d352918438547bcb6db1dafd, type: 3}
+  size: {x: 1, y: 1}

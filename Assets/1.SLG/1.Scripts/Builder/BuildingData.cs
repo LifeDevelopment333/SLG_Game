@@ -29,6 +29,9 @@ namespace SLG.Builder
     public enum BuildingType
     {
         자원,
-        군사
+        군사,
+        특수,
+        타워,
+        방어
     }
 }
