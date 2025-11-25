@@ -15,6 +15,7 @@ MonoBehaviour:
   sceneDatas_byGuid:
     keys:
     - 0fb389d0b0831fa489b2a16fb80cc031
+    - dbe5a17145be75144b2f2b0ff0ecf3ce
     values:
     - goDatas_byGlobalId:
         keys:
@@ -24,5 +25,8 @@ MonoBehaviour:
           iconNameOrGuid: Folder Icon
           isIconRecursive: 0
           isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys: []
+        values: []
   bookmarks: []
   bookmarkedScenePaths: []
