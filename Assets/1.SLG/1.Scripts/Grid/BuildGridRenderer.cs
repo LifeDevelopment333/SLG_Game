@@ -22,21 +22,37 @@ public class BuildGridRenderer : MonoBehaviour
         enableGrid = false;
     }
 
-    private void OnPostRender()
+    private void OnRenderObject()
     {
         if (!enableGrid) return;
         if (gridData == null) return;
 
+        // 🔥 GameView 렌더링 카메라 확인
+        if (Camera.current != Camera.main)
+            return;
+
+        // 🔥 GL 시작
+        Material mat = GetLineMaterial();
+        if (mat == null)
+        {
+            Debug.LogWarning("Line Material 생성 실패!");
+            return;
+        }
+
+        mat.SetPass(0);
+
         GL.PushMatrix();
-        GL.LoadIdentity();
         GL.MultMatrix(Camera.main.worldToCameraMatrix.inverse);
-
-        Material lineMat = GetLineMaterial();
-        lineMat.SetPass(0);
-
         GL.Begin(GL.LINES);
 
-        // 주변 N x N만 보여줌
+        DrawPreviewGrid();
+
+        GL.End();
+        GL.PopMatrix();
+    }
+
+    private void DrawPreviewGrid()
+    {
         for (int i = 0; i < previewSize; i++)
         {
             for (int j = 0; j < previewSize; j++)
@@ -49,14 +65,13 @@ public class BuildGridRenderer : MonoBehaviour
 
                 GridCell cell = gridData.GetCell(gx, gz);
 
-                Color c = cell.isBuildable && !cell.isOccupied ? Color.green : Color.red;
-                GL.Color(c);
+                // 🔥 셀 색상
+                GL.Color(cell.isBuildable && !cell.isOccupied ? Color.green : Color.red);
 
                 float cs = gridData.CellSize * 0.5f;
-
                 Vector3 center = cell.GridPosition;
 
-                // 4 모서리(Terrain 높이에 따라 변화)
+                // 🔥 모서리 4개를 Terrain에 맞게 Raycast
                 Vector3 A = RayToTerrain(center + new Vector3(-cs, 0, -cs));
                 Vector3 B = RayToTerrain(center + new Vector3(+cs, 0, -cs));
                 Vector3 C = RayToTerrain(center + new Vector3(+cs, 0, +cs));
@@ -68,12 +83,8 @@ public class BuildGridRenderer : MonoBehaviour
                 DrawLine(D, A);
             }
         }
-
-        GL.End();
-        GL.PopMatrix();
     }
 
-    // Terrain에 맞게 Raycast
     Vector3 RayToTerrain(Vector3 pos)
     {
         pos.y += gridData.RayHeight;
@@ -90,20 +101,29 @@ public class BuildGridRenderer : MonoBehaviour
         GL.Vertex(b);
     }
 
-    // GL용 머터리얼
+    // 🔥 URP에서도 안정적으로 작동하는 GL 머티리얼
     private static Material lineMat;
     Material GetLineMaterial()
     {
         if (lineMat == null)
         {
+            // URP 호환 헤덴 셰이더 적용
             Shader shader = Shader.Find("Hidden/Internal-Colored");
+            if (shader == null)
+            {
+                Debug.LogError("Internal-Colored Shader not found!");
+                return null;
+            }
+
             lineMat = new Material(shader);
             lineMat.hideFlags = HideFlags.HideAndDontSave;
+
             lineMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             lineMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             lineMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
             lineMat.SetInt("_ZWrite", 0);
         }
+
         return lineMat;
     }
 }
