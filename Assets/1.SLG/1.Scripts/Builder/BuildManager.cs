@@ -8,15 +8,23 @@ namespace SLG.Builder
         private static BuildManager instance;
         public static BuildManager Instance => instance;
 
+        [Header("프리뷰 머터리얼")]
         [SerializeField] private Material previewMaterial;
 
+        [Header("지형 데이터 (ScriptableObject)")]
+        [SerializeField] private GridData mapData;
+
         private Camera cam;
-        private RaycastHit hit;
         private GameObject previewObject;
         private Renderer previewRenderer;
-        private BuildingData selectBuilding;
 
-        public bool isBuilder;
+        private BuildingData selectBuilding;
+        private bool isBuildMode = false;
+
+        private int curX;
+        private int curZ;
+
+        [SerializeField] private BuildGridRenderer buildGridRenderer;
 
         private void Awake()
         {
@@ -26,66 +34,112 @@ namespace SLG.Builder
 
         private void Update()
         {
-            if (isBuilder == false || selectBuilding == null) return;
+            if (!isBuildMode || selectBuilding == null)
+                return;
 
+            UpdatePreview();
+        }
+
+        // ---------------------------------------------------------
+        // 🔥 미리보기 업데이트
+        // ---------------------------------------------------------
+        private void UpdatePreview()
+        {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
+
+            if (!Physics.Raycast(ray, out RaycastHit hit, 500f)) return;
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            // 월드 → 그리드 변환
+            if (!GridUtil.WorldToGrid(hit.point, out curX, out curZ, mapData))
+                return;
+
+            // 그리드 → 월드 위치 (Terrain 중심)
+            Vector3 worldPos = GridUtil.GridToWorld(curX, curZ, mapData);
+
+            // 프리뷰 오브젝트 생성
+            if (previewObject == null)
             {
-                if (EventSystem.current.IsPointerOverGameObject() == true) return;
+                previewObject = Instantiate(selectBuilding.Prefab);
+                previewRenderer = previewObject.GetComponentInChildren<Renderer>();
 
-                Vector2Int coordinate = GridManager.Instance.WorldToGrid(hit.point);
-                Vector3 MouseOnPosition = GridManager.Instance.GridToWorld(coordinate);
-                if(MouseOnPosition == Vector3.zero)
+                ApplyPreviewMaterial(Color.green);
+            }
+
+            previewObject.transform.position = worldPos;
+
+            // 건설 가능 여부 확인
+            bool canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size);
+
+            ApplyPreviewMaterial(canBuild ? Color.green : Color.red);
+
+            // 좌클릭 시 건설
+            if (Input.GetMouseButtonDown(0) && canBuild)
+                PlaceBuilding(worldPos);
+
+            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size);
+        }
+
+        // ---------------------------------------------------------
+        // 🔥 건물 배치
+        // ---------------------------------------------------------
+        private void PlaceBuilding(Vector3 pos)
+        {
+            GameObject obj = selectBuilding.CreateBuilding(pos);
+            obj.transform.parent = transform;
+
+            // 점유 처리
+            MarkOccupied(curX, curZ, selectBuilding.Size);
+            buildGridRenderer.HidePreviewGrid();
+        }
+
+        // ---------------------------------------------------------
+        // 🔥 점유 처리 (N×N)
+        // ---------------------------------------------------------
+        private void MarkOccupied(int x, int z, int size)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
                 {
-                    MouseOnPosition = hit.point;
-                }
+                    int px = x + i;
+                    int pz = z + j;
 
-                if (previewObject == null)
-                {
-                    Debug.Log("Create Preview Object");
-                    previewObject = Instantiate(selectBuilding.Prefab);
-                    previewRenderer = previewObject.GetComponentInChildren<Renderer>();
-                    SetPreviewMaterialColor(Color.green);
-                }
-                previewObject.transform.position = MouseOnPosition;
-
-                bool canBuild = GridManager.Instance.CanBuild(coordinate, selectBuilding.Size);
-                GridManager.Instance.HighlightBuild(coordinate, selectBuilding.Size, canBuild);
-                SetPreviewMaterialColor(canBuild ? Color.green : Color.red);
-
-                // 건물 생성
-                if (Input.GetMouseButtonDown(0) && canBuild)
-                {
-                    GameObject obj = selectBuilding.CreateBuilding(MouseOnPosition);
-                    obj.transform.parent = transform;
-                    GridManager.Instance.CreatedBuilding(coordinate, selectBuilding.Size);
+                    int index = mapData.Index(px, pz);
+                    GridCell cell = mapData.GetCell(px,pz);
+                    cell.isOccupied = true;
+                    mapData.Cells[index] = cell;
                 }
             }
         }
 
-        /// <summary>
-        /// 건물 선택
-        /// </summary>
+        // ---------------------------------------------------------
+        // 🔥 프리뷰 색상
+        // ---------------------------------------------------------
+        private void ApplyPreviewMaterial(Color color)
+        {
+            if (previewRenderer == null) return;
+
+            previewRenderer.material = previewMaterial;
+            previewRenderer.material.SetColor("_TintColor", color);
+            previewRenderer.material.SetFloat("_Alpha", 0.5f);
+        }
+
+        // ---------------------------------------------------------
+        // 🔥 건물 선택
+        // ---------------------------------------------------------
         public void SelectBuilding(BuildingData data)
         {
-            if (selectBuilding == data) return;
+            selectBuilding = data;
+            isBuildMode = true;
+
+            if (previewObject != null)
+                Destroy(previewObject);
+            buildGridRenderer.HidePreviewGrid();
+
+            previewObject = null;
 
             Debug.Log("Select Building: " + data.name);
-            selectBuilding = data;
-            DestroyImmediate(previewObject);
-        }
-
-        /// <summary>
-        /// 건물 프리뷰
-        /// </summary>
-        void SetPreviewMaterialColor(Color color)
-        {
-            if (previewRenderer != null)
-            {
-                previewRenderer.material = previewMaterial;
-                previewRenderer.material.SetColor("_TintColor", color);
-                previewRenderer.material.SetFloat("_Alpha", 0.5f);
-            }
         }
     }
 }

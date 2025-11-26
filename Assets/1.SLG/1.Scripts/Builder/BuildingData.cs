@@ -9,10 +9,10 @@ namespace SLG.Builder
         [SerializeField] private string description;
         [SerializeField] private BuildingType type;
         [SerializeField] private GameObject prefab;
-        [SerializeField] private Vector2Int size = Vector2Int.one;
+        [SerializeField] private int size = 1;
 
         public GameObject Prefab => prefab;
-        public Vector2Int Size => size;
+        public int Size => size;
         public BuildingType Type => type;
 
         /// <summary>
