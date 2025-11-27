@@ -62,8 +62,6 @@ namespace SLG.Builder
             {
                 previewObject = Instantiate(selectBuilding.Prefab);
                 previewRenderer = previewObject.GetComponentInChildren<Renderer>();
-
-                ApplyPreviewMaterial(Color.green);
             }
 
             previewObject.transform.position = worldPos;
@@ -75,8 +73,11 @@ namespace SLG.Builder
 
             // 좌클릭 시 건설
             if (Input.GetMouseButtonDown(0) && canBuild)
+            {
                 PlaceBuilding(worldPos);
+            }
 
+            // 그리드 보여주기
             buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size);
         }
 
@@ -90,6 +91,8 @@ namespace SLG.Builder
 
             // 점유 처리
             MarkOccupied(curX, curZ, selectBuilding.Size);
+
+            // 건설 후 그리드 비활성화
             buildGridRenderer.HidePreviewGrid();
         }
 
@@ -98,12 +101,15 @@ namespace SLG.Builder
         // ---------------------------------------------------------
         private void MarkOccupied(int x, int z, int size)
         {
+            int startX = GridUtil.GetStartX(x, size);
+            int startZ = GridUtil.GetStartZ(z, size);
+
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    int px = x + i;
-                    int pz = z + j;
+                    int px = startX + i;
+                    int pz = startZ + j;
 
                     int index = mapData.Index(px, pz);
                     GridCell cell = mapData.GetCell(px,pz);
@@ -135,6 +141,8 @@ namespace SLG.Builder
 
             if (previewObject != null)
                 Destroy(previewObject);
+
+            // 건물선택 시 그리드 비활성화
             buildGridRenderer.HidePreviewGrid();
 
             previewObject = null;

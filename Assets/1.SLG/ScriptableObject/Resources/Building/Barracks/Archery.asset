@@ -16,4 +16,4 @@ MonoBehaviour:
   description: "\uC544\uCC98 \uAC74\uBB3C"
   type: 1
   prefab: {fileID: 7757314567541596192, guid: cdc5f0e75b9cf934d8d03e0a45c0c526, type: 3}
-  size: {x: 1, y: 1}
+  size: 3

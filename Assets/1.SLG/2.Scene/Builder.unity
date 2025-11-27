@@ -875,7 +875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
-  isDebug: 1
+  isDebug: 0
 --- !u!1 &801524839
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,8 +1290,7 @@ Transform:
   m_LocalPosition: {x: 179.492, y: 42.332672, z: -5.435014}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1173060976}
+  m_Children: []
   m_Father: {fileID: 131760477}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1109502447
@@ -1470,7 +1469,7 @@ GameObject:
   - component: {fileID: 1173060976}
   - component: {fileID: 1173060977}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: BuildGridRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1489,7 +1488,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1109502446}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1173060977
 MonoBehaviour:
@@ -1504,7 +1503,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
-  enableGrid: 0
+  lineMaterial: {fileID: 2100000, guid: 631aac606079b6e458547d5bd1300c54, type: 2}
+  fillMaterial: {fileID: 2100000, guid: 18b28803abf73ed45b97655952cd8274, type: 2}
+  lineWidth: 1
+  heightOffset: 1
+  fillOffset: 0.01
 --- !u!1 &1242701714
 GameObject:
   m_ObjectHideFlags: 0
@@ -2043,7 +2046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previewMaterial: {fileID: 2100000, guid: 02f14acd82fc2ed4e92be22148488266, type: 2}
   mapData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
-  buildGridRenderer: {fileID: 0}
+  buildGridRenderer: {fileID: 1173060977}
 --- !u!4 &1748834313
 Transform:
   m_ObjectHideFlags: 0
@@ -2743,6 +2746,7 @@ SceneRoots:
   - {fileID: 131760477}
   - {fileID: 1131094420}
   - {fileID: 636724493}
+  - {fileID: 1173060976}
   - {fileID: 657900558}
   - {fileID: 1748834313}
   - {fileID: 2002094421}

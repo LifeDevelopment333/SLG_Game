@@ -16,4 +16,4 @@ MonoBehaviour:
   description: "\uBCD1\uC601"
   type: 1
   prefab: {fileID: 2195105946374976618, guid: e39884351acec4746a22e1c4a8c02c99, type: 3}
-  size: {x: 1, y: 1}
+  size: 3

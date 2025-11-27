@@ -4,12 +4,15 @@ public static class PlacementChecker
 {
     public static bool CanBuild(int x, int z, GridData data, int size)
     {
+        int startX = GridUtil.GetStartX(x, size);
+        int startZ = GridUtil.GetStartZ(z, size);
+
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                int px = x + i;
-                int pz = z + j;
+                int px = startX + i;
+                int pz = startZ + j;
 
                 if (px < 0 || pz < 0 || px >= data.GridSize || pz >= data.GridSize)
                     return false;

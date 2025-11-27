@@ -3,127 +3,195 @@ using UnityEngine;
 public class BuildGridRenderer : MonoBehaviour
 {
     [SerializeField] private GridData gridData;
-    public bool enableGrid = false;
+    [SerializeField] private Material lineMaterial;  // Unlit
+    [SerializeField] private Material fillMaterial;  // Unlit Transparent
 
-    private int previewX;
-    private int previewZ;
-    private int previewSize = 1;
+    private MeshFilter lineMF, fillMF;
+    private MeshRenderer lineMR, fillMR;
+
+    private int previewX, previewZ, previewSize;
+    private bool showGrid = false;
+
+    public float lineWidth = 0.05f;
+    public float heightOffset = 0.02f;
+    public float fillOffset = 0.01f;       // fill plane is lower than line slightly
+
+    private void Awake()
+    {
+        // Mesh for Lines
+        GameObject lineObj = new GameObject("GridLines");
+        lineObj.transform.SetParent(transform, false);
+        lineMF = lineObj.AddComponent<MeshFilter>();
+        lineMR = lineObj.AddComponent<MeshRenderer>();
+        lineMR.material = lineMaterial;
+
+        // Mesh for Fill
+        GameObject fillObj = new GameObject("GridFill");
+        fillObj.transform.SetParent(transform, false);
+        fillMF = fillObj.AddComponent<MeshFilter>();
+        fillMR = fillObj.AddComponent<MeshRenderer>();
+        fillMR.material = fillMaterial;
+    }
 
     public void ShowPreviewGrid(int x, int z, int size)
     {
         previewX = x;
         previewZ = z;
         previewSize = size;
-        enableGrid = true;
+
+        showGrid = true;
+        GenerateMeshes();
     }
 
     public void HidePreviewGrid()
     {
-        enableGrid = false;
+        showGrid = false;
+        lineMF.mesh = null;
+        fillMF.mesh = null;
     }
 
-    private void OnRenderObject()
+    private void GenerateMeshes()
     {
-        if (!enableGrid) return;
-        if (gridData == null) return;
+        if (!showGrid || gridData == null) return;
 
-        // 🔥 GameView 렌더링 카메라 확인
-        if (Camera.current != Camera.main)
-            return;
-
-        // 🔥 GL 시작
-        Material mat = GetLineMaterial();
-        if (mat == null)
-        {
-            Debug.LogWarning("Line Material 생성 실패!");
-            return;
-        }
-
-        mat.SetPass(0);
-
-        GL.PushMatrix();
-        GL.MultMatrix(Camera.main.worldToCameraMatrix.inverse);
-        GL.Begin(GL.LINES);
-
-        DrawPreviewGrid();
-
-        GL.End();
-        GL.PopMatrix();
+        GenerateLineMesh();
+        //GenerateFillMesh();
     }
 
-    private void DrawPreviewGrid()
+    // -------------------------------------------------------------
+    // 1) Line Mesh 생성 (Build 가능 = Green, 불가 Red)
+    // -------------------------------------------------------------
+    private void GenerateLineMesh()
     {
+        int cellCount = previewSize * previewSize;
+        int lineCount = cellCount * 4;
+
+        Vector3[] verts = new Vector3[lineCount * 4];
+        int[] tris = new int[lineCount * 6];
+
+        int idx = 0;
+
+        int startX = GridUtil.GetStartX(previewX, previewSize);
+        int startZ = GridUtil.GetStartZ(previewZ, previewSize);
+
         for (int i = 0; i < previewSize; i++)
         {
             for (int j = 0; j < previewSize; j++)
             {
-                int gx = previewX + i;
-                int gz = previewZ + j;
+                int gx = startX + i;
+                int gz = startZ + j;
 
                 if (gx < 0 || gz < 0 || gx >= gridData.GridSize || gz >= gridData.GridSize)
                     continue;
 
                 GridCell cell = gridData.GetCell(gx, gz);
 
-                // 🔥 셀 색상
-                GL.Color(cell.isBuildable && !cell.isOccupied ? Color.green : Color.red);
+                // 라인 색상 설정
+                Color lineColor = (cell.isBuildable && !cell.isOccupied) ? Color.green : Color.red;
+                lineMR.material.color = lineColor;
 
                 float cs = gridData.CellSize * 0.5f;
                 Vector3 center = cell.GridPosition;
 
-                // 🔥 모서리 4개를 Terrain에 맞게 Raycast
                 Vector3 A = RayToTerrain(center + new Vector3(-cs, 0, -cs));
                 Vector3 B = RayToTerrain(center + new Vector3(+cs, 0, -cs));
                 Vector3 C = RayToTerrain(center + new Vector3(+cs, 0, +cs));
                 Vector3 D = RayToTerrain(center + new Vector3(-cs, 0, +cs));
 
-                DrawLine(A, B);
-                DrawLine(B, C);
-                DrawLine(C, D);
-                DrawLine(D, A);
+                LineMeshGenerator.AddLine(A, B, lineWidth, ref idx, verts, tris);
+                LineMeshGenerator.AddLine(B, C, lineWidth, ref idx, verts, tris);
+                LineMeshGenerator.AddLine(C, D, lineWidth, ref idx, verts, tris);
+                LineMeshGenerator.AddLine(D, A, lineWidth, ref idx, verts, tris);
             }
         }
+
+        Mesh m = new Mesh();
+        m.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        m.vertices = verts;
+        m.triangles = tris;
+        m.RecalculateNormals();
+        m.RecalculateBounds();
+
+        lineMF.sharedMesh = m;
     }
 
-    Vector3 RayToTerrain(Vector3 pos)
+    // -------------------------------------------------------------
+    // 2) Fill Mesh 생성 (반투명 내부 사각형)
+    // -------------------------------------------------------------
+    private void GenerateFillMesh()
+    {
+        int cellCount = previewSize * previewSize;
+
+        Vector3[] verts = new Vector3[cellCount * 4];
+        int[] tris = new int[cellCount * 6];
+        int v = 0;
+        int t = 0;
+
+        int half = previewSize / 2;
+        int startX = previewX - half;
+        int startZ = previewZ - half;
+
+        for (int i = 0; i < previewSize; i++)
+        {
+            for (int j = 0; j < previewSize; j++)
+            {
+                int gx = startX + i;
+                int gz = startZ + j;
+
+                if (gx < 0 || gz < 0 || gx >= gridData.GridSize || gz >= gridData.GridSize)
+                    continue;
+
+                GridCell cell = gridData.GetCell(gx, gz);
+
+                float cs = gridData.CellSize * 0.5f;
+                Vector3 center = cell.GridPosition - Vector3.up * fillOffset;
+
+                // Fill 색
+                Color fillColor = (cell.isBuildable && !cell.isOccupied) ?
+                    new Color(0, 1, 0, 0.2f) :
+                    new Color(1, 0, 0, 0.2f);
+
+                fillMR.material.color = fillColor;
+
+                Vector3 A = center + new Vector3(-cs, 0, -cs);
+                Vector3 B = center + new Vector3(+cs, 0, -cs);
+                Vector3 C = center + new Vector3(+cs, 0, +cs);
+                Vector3 D = center + new Vector3(-cs, 0, +cs);
+
+                verts[v + 0] = A;
+                verts[v + 1] = B;
+                verts[v + 2] = C;
+                verts[v + 3] = D;
+
+                tris[t + 0] = v + 0;
+                tris[t + 1] = v + 1;
+                tris[t + 2] = v + 2;
+
+                tris[t + 3] = v + 0;
+                tris[t + 4] = v + 2;
+                tris[t + 5] = v + 3;
+
+                v += 4;
+                t += 6;
+            }
+        }
+
+        Mesh fillMesh = new Mesh();
+        fillMesh.vertices = verts;
+        fillMesh.triangles = tris;
+        fillMesh.RecalculateNormals();
+        fillMesh.RecalculateBounds();
+
+        fillMF.sharedMesh = fillMesh;
+    }
+
+    private Vector3 RayToTerrain(Vector3 pos)
     {
         pos.y += gridData.RayHeight;
 
         if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, gridData.RayHeight * 2, gridData.TerrainLayer))
-            return hit.point;
+            return hit.point + Vector3.up * heightOffset;
 
-        return pos;
-    }
-
-    void DrawLine(Vector3 a, Vector3 b)
-    {
-        GL.Vertex(a);
-        GL.Vertex(b);
-    }
-
-    // 🔥 URP에서도 안정적으로 작동하는 GL 머티리얼
-    private static Material lineMat;
-    Material GetLineMaterial()
-    {
-        if (lineMat == null)
-        {
-            // URP 호환 헤덴 셰이더 적용
-            Shader shader = Shader.Find("Hidden/Internal-Colored");
-            if (shader == null)
-            {
-                Debug.LogError("Internal-Colored Shader not found!");
-                return null;
-            }
-
-            lineMat = new Material(shader);
-            lineMat.hideFlags = HideFlags.HideAndDontSave;
-
-            lineMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            lineMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            lineMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-            lineMat.SetInt("_ZWrite", 0);
-        }
-
-        return lineMat;
+        return pos + Vector3.up * heightOffset;
     }
 }
