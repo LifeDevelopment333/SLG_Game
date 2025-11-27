@@ -37,12 +37,19 @@ namespace SLG.Builder
             if (!isBuildMode || selectBuilding == null)
                 return;
 
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                ExitBuildMode();
+            }
+
             UpdatePreview();
         }
 
-        // ---------------------------------------------------------
-        // 🔥 미리보기 업데이트
-        // ---------------------------------------------------------
+        private void ExitBuildMode()
+        {
+            // 빌드모드 나가기
+        }
+
         private void UpdatePreview()
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -81,9 +88,6 @@ namespace SLG.Builder
             buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size);
         }
 
-        // ---------------------------------------------------------
-        // 🔥 건물 배치
-        // ---------------------------------------------------------
         private void PlaceBuilding(Vector3 pos)
         {
             GameObject obj = selectBuilding.CreateBuilding(pos);
@@ -96,9 +100,6 @@ namespace SLG.Builder
             buildGridRenderer.HidePreviewGrid();
         }
 
-        // ---------------------------------------------------------
-        // 🔥 점유 처리 (N×N)
-        // ---------------------------------------------------------
         private void MarkOccupied(int x, int z, int size)
         {
             int startX = GridUtil.GetStartX(x, size);
@@ -119,9 +120,6 @@ namespace SLG.Builder
             }
         }
 
-        // ---------------------------------------------------------
-        // 🔥 프리뷰 색상
-        // ---------------------------------------------------------
         private void ApplyPreviewMaterial(Color color)
         {
             if (previewRenderer == null) return;
@@ -131,9 +129,6 @@ namespace SLG.Builder
             previewRenderer.material.SetFloat("_Alpha", 0.5f);
         }
 
-        // ---------------------------------------------------------
-        // 🔥 건물 선택
-        // ---------------------------------------------------------
         public void SelectBuilding(BuildingData data)
         {
             selectBuilding = data;

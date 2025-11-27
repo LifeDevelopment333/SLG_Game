@@ -22,21 +22,32 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-1772000719-0
         - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-657900556-0
         - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-1748834311-0
+        - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-816902525-0
         values:
         - colorIndex: 9
           iconNameOrGuid: Folder Icon
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 2
+          iconNameOrGuid: ScriptableObject Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 4
           iconNameOrGuid: cs Script Icon
           isIconRecursive: 0
           isColorRecursive: 0
-        - colorIndex: 2
+        - colorIndex: 4
           iconNameOrGuid: cs Script Icon
           isIconRecursive: 0
           isColorRecursive: 0
     - goDatas_byGlobalId:
         keys: []
         values: []
-  bookmarks: []
+  bookmarks:
+  - _go: {fileID: 0}
+    globalId:
+      globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-1748834311-0
+  - _go: {fileID: 0}
+    globalId:
+      globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-657900556-0
   bookmarkedScenePaths: []

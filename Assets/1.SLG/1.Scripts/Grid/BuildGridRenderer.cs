@@ -1,36 +1,55 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildGridRenderer : MonoBehaviour
 {
     [SerializeField] private GridData gridData;
-    [SerializeField] private Material lineMaterial;  // Unlit
-    [SerializeField] private Material fillMaterial;  // Unlit Transparent
 
-    private MeshFilter lineMF, fillMF;
-    private MeshRenderer lineMR, fillMR;
+    [Header("라인 머터리얼 (2개 순서 고정: Green, Red)")]
+    [SerializeField] private Material[] lineMaterials; // [0] = green, [1] = red
+
+    [Header("채우기 머터리얼 (2개 순서 고정: Green, Red)")]
+    [SerializeField] private Material[] fillMaterials; // [0] = green, [1] = red
+
+    [Header("확장 선 머터리얼")]
+    [SerializeField] private Material expandLineMaterial;
+
+    [Header("확장 범위 설정")]
+    public int expandRange = 10;
+
+    private MeshFilter lineMF, fillMF, expandMF;
+    private MeshRenderer lineMR, fillMR, expandMR;
 
     private int previewX, previewZ, previewSize;
     private bool showGrid = false;
 
+    [Header("렌더러 설정")]
     public float lineWidth = 0.05f;
     public float heightOffset = 0.02f;
-    public float fillOffset = 0.01f;       // fill plane is lower than line slightly
+    public float fillOffset = 0.01f;
 
     private void Awake()
     {
-        // Mesh for Lines
+        // 선
         GameObject lineObj = new GameObject("GridLines");
         lineObj.transform.SetParent(transform, false);
         lineMF = lineObj.AddComponent<MeshFilter>();
         lineMR = lineObj.AddComponent<MeshRenderer>();
-        lineMR.material = lineMaterial;
+        lineMR.materials = lineMaterials; // 반드시 2개
 
-        // Mesh for Fill
+        // 채우기
         GameObject fillObj = new GameObject("GridFill");
         fillObj.transform.SetParent(transform, false);
         fillMF = fillObj.AddComponent<MeshFilter>();
         fillMR = fillObj.AddComponent<MeshRenderer>();
-        fillMR.material = fillMaterial;
+        fillMR.materials = fillMaterials; // 반드시 2개
+
+        // 확장선
+        GameObject expandObj = new GameObject("GridExpand");
+        expandObj.transform.SetParent(transform, false);
+        expandMF = expandObj.AddComponent <MeshFilter>();
+        expandMR = expandObj.AddComponent<MeshRenderer>();
+        expandMR.material = expandLineMaterial;
     }
 
     public void ShowPreviewGrid(int x, int z, int size)
@@ -48,28 +67,27 @@ public class BuildGridRenderer : MonoBehaviour
         showGrid = false;
         lineMF.mesh = null;
         fillMF.mesh = null;
+        expandMF.mesh = null;
     }
 
     private void GenerateMeshes()
     {
         if (!showGrid || gridData == null) return;
 
-        GenerateLineMesh();
-        //GenerateFillMesh();
+        GenerateLineMesh_SubMesh();
+        GenerateFillMesh_SubMesh();
+        GenerateFillMesh_ExpandMesh();
     }
 
-    // -------------------------------------------------------------
-    // 1) Line Mesh 생성 (Build 가능 = Green, 불가 Red)
-    // -------------------------------------------------------------
-    private void GenerateLineMesh()
+    /// <summary>
+    /// 라인 매쉬
+    /// </summary>
+    private void GenerateLineMesh_SubMesh()
     {
         int cellCount = previewSize * previewSize;
-        int lineCount = cellCount * 4;
 
-        Vector3[] verts = new Vector3[lineCount * 4];
-        int[] tris = new int[lineCount * 6];
-
-        int idx = 0;
+        MeshBuffer green = new MeshBuffer(cellCount * 4);
+        MeshBuffer red = new MeshBuffer(cellCount * 4);
 
         int startX = GridUtil.GetStartX(previewX, previewSize);
         int startZ = GridUtil.GetStartZ(previewZ, previewSize);
@@ -85,51 +103,63 @@ public class BuildGridRenderer : MonoBehaviour
                     continue;
 
                 GridCell cell = gridData.GetCell(gx, gz);
-
-                // 라인 색상 설정
-                Color lineColor = (cell.isBuildable && !cell.isOccupied) ? Color.green : Color.red;
-                lineMR.material.color = lineColor;
+                bool canBuild = (cell.isBuildable && !cell.isOccupied);
+                MeshBuffer buffer = canBuild ? green : red;
 
                 float cs = gridData.CellSize * 0.5f;
                 Vector3 center = cell.GridPosition;
 
-                Vector3 A = RayToTerrain(center + new Vector3(-cs, 0, -cs));
-                Vector3 B = RayToTerrain(center + new Vector3(+cs, 0, -cs));
-                Vector3 C = RayToTerrain(center + new Vector3(+cs, 0, +cs));
-                Vector3 D = RayToTerrain(center + new Vector3(-cs, 0, +cs));
+                Vector3 A = Ray(center + new Vector3(-cs, 0, -cs));
+                Vector3 B = Ray(center + new Vector3(+cs, 0, -cs));
+                Vector3 C = Ray(center + new Vector3(+cs, 0, +cs));
+                Vector3 D = Ray(center + new Vector3(-cs, 0, +cs));
 
-                LineMeshGenerator.AddLine(A, B, lineWidth, ref idx, verts, tris);
-                LineMeshGenerator.AddLine(B, C, lineWidth, ref idx, verts, tris);
-                LineMeshGenerator.AddLine(C, D, lineWidth, ref idx, verts, tris);
-                LineMeshGenerator.AddLine(D, A, lineWidth, ref idx, verts, tris);
+                buffer.AddLine(A, B, lineWidth);
+                buffer.AddLine(B, C, lineWidth);
+                buffer.AddLine(C, D, lineWidth);
+                buffer.AddLine(D, A, lineWidth);
             }
         }
 
+        // 🔹 버텍스 하나로 합치기
+        int greenVertCount = green.verts.Count;
+        int redVertCount = red.verts.Count;
+
+        var allVerts = new List<Vector3>(greenVertCount + redVertCount);
+        allVerts.AddRange(green.verts);
+        allVerts.AddRange(red.verts);
+
+        // 🔹 빨강 삼각형 인덱스는 버텍스 개수만큼 offset
+        var redTrisOffset = new List<int>(red.tris.Count);
+        foreach (int id in red.tris)
+            redTrisOffset.Add(id + greenVertCount);
+
         Mesh m = new Mesh();
         m.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        m.vertices = verts;
-        m.triangles = tris;
+        m.subMeshCount = 2;
+
+        m.SetVertices(allVerts);
+        m.SetTriangles(green.tris, 0);      // submesh 0 = green
+        m.SetTriangles(redTrisOffset, 1);   // submesh 1 = red
+
         m.RecalculateNormals();
         m.RecalculateBounds();
 
         lineMF.sharedMesh = m;
     }
 
-    // -------------------------------------------------------------
-    // 2) Fill Mesh 생성 (반투명 내부 사각형)
-    // -------------------------------------------------------------
-    private void GenerateFillMesh()
+    /// <summary>
+    /// 채우기용 매쉬
+    /// </summary>
+    private void GenerateFillMesh_SubMesh()
     {
         int cellCount = previewSize * previewSize;
 
-        Vector3[] verts = new Vector3[cellCount * 4];
-        int[] tris = new int[cellCount * 6];
-        int v = 0;
-        int t = 0;
+        MeshBuffer green = new MeshBuffer(cellCount);
+        MeshBuffer red = new MeshBuffer(cellCount);
 
-        int half = previewSize / 2;
-        int startX = previewX - half;
-        int startZ = previewZ - half;
+        int startX = GridUtil.GetStartX(previewX, previewSize);
+        int startZ = GridUtil.GetStartZ(previewZ, previewSize);
 
         for (int i = 0; i < previewSize; i++)
         {
@@ -142,50 +172,94 @@ public class BuildGridRenderer : MonoBehaviour
                     continue;
 
                 GridCell cell = gridData.GetCell(gx, gz);
+                bool canBuild = (cell.isBuildable && !cell.isOccupied);
+                MeshBuffer buffer = canBuild ? green : red;
 
                 float cs = gridData.CellSize * 0.5f;
-                Vector3 center = cell.GridPosition - Vector3.up * fillOffset;
+                Vector3 center = cell.GridPosition;
 
-                // Fill 색
-                Color fillColor = (cell.isBuildable && !cell.isOccupied) ?
-                    new Color(0, 1, 0, 0.2f) :
-                    new Color(1, 0, 0, 0.2f);
+                Vector3 A = Ray(center + new Vector3(-cs, 0, -cs));
+                Vector3 B = Ray(center + new Vector3(+cs, 0, -cs));
+                Vector3 C = Ray(center + new Vector3(+cs, 0, +cs));
+                Vector3 D = Ray(center + new Vector3(-cs, 0, +cs));
 
-                fillMR.material.color = fillColor;
-
-                Vector3 A = center + new Vector3(-cs, 0, -cs);
-                Vector3 B = center + new Vector3(+cs, 0, -cs);
-                Vector3 C = center + new Vector3(+cs, 0, +cs);
-                Vector3 D = center + new Vector3(-cs, 0, +cs);
-
-                verts[v + 0] = A;
-                verts[v + 1] = B;
-                verts[v + 2] = C;
-                verts[v + 3] = D;
-
-                tris[t + 0] = v + 0;
-                tris[t + 1] = v + 1;
-                tris[t + 2] = v + 2;
-
-                tris[t + 3] = v + 0;
-                tris[t + 4] = v + 2;
-                tris[t + 5] = v + 3;
-
-                v += 4;
-                t += 6;
+                buffer.AddQuad(A, B, C, D);
             }
         }
 
-        Mesh fillMesh = new Mesh();
-        fillMesh.vertices = verts;
-        fillMesh.triangles = tris;
-        fillMesh.RecalculateNormals();
-        fillMesh.RecalculateBounds();
+        int greenVertCount = green.verts.Count;
+        int redVertCount = red.verts.Count;
 
-        fillMF.sharedMesh = fillMesh;
+        var allVerts = new List<Vector3>(greenVertCount + redVertCount);
+        allVerts.AddRange(green.verts);
+        allVerts.AddRange(red.verts);
+
+        var redTrisOffset = new List<int>(red.tris.Count);
+        foreach (int id in red.tris)
+            redTrisOffset.Add(id + greenVertCount);
+
+        Mesh m = new Mesh();
+        m.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        m.subMeshCount = 2;
+
+        m.SetVertices(allVerts);
+        m.SetTriangles(green.tris, 0);
+        m.SetTriangles(redTrisOffset, 1);
+
+        m.RecalculateNormals();
+        m.RecalculateBounds();
+
+        fillMF.sharedMesh = m;
     }
 
-    private Vector3 RayToTerrain(Vector3 pos)
+    private void GenerateFillMesh_ExpandMesh()
+    {
+        int range = expandRange;
+        int maxCount = (range * 2 + 1) * (range * 2 + 1);
+
+        MeshBuffer buf = new MeshBuffer(maxCount * 4);
+
+        for (int i = -range; i <= range; i++)
+        {
+            for (int j = -range; j <= range; j++)
+            {
+                int gx = previewX + i;
+                int gz = previewZ + j;
+
+                if (gx < 0 || gz < 0 || gx >= gridData.GridSize || gz >= gridData.GridSize)
+                    continue;
+
+                GridCell cell = gridData.GetCell(gx, gz);
+
+                // 프리뷰 영역 N×N은 제외
+                if (Mathf.Abs(i) < previewSize / 2 + 1 && Mathf.Abs(j) < previewSize / 2 + 1)
+                    continue;
+
+                float cs = gridData.CellSize * 0.5f;
+                Vector3 center = cell.GridPosition;
+
+                Vector3 A = Ray(center + new Vector3(-cs, 0, -cs));
+                Vector3 B = Ray(center + new Vector3(+cs, 0, -cs));
+                Vector3 C = Ray(center + new Vector3(+cs, 0, +cs));
+                Vector3 D = Ray(center + new Vector3(-cs, 0, +cs));
+
+                buf.AddLine(A, B, lineWidth);
+                buf.AddLine(B, C, lineWidth);
+                buf.AddLine(C, D, lineWidth);
+                buf.AddLine(D, A, lineWidth);
+            }
+        }
+
+        Mesh m = new Mesh();
+        m.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
+        m.SetVertices(buf.verts);
+        m.SetTriangles(buf.tris, 0);
+
+        expandMF.sharedMesh = m;
+    }
+
+    private Vector3 Ray(Vector3 pos)
     {
         pos.y += gridData.RayHeight;
 
@@ -195,3 +269,62 @@ public class BuildGridRenderer : MonoBehaviour
         return pos + Vector3.up * heightOffset;
     }
 }
+
+public class MeshBuffer
+{
+    public List<Vector3> verts = new List<Vector3>();
+    public List<int> tris = new List<int>();
+
+    private int vertIndex = 0;
+
+    public MeshBuffer(int max)
+    {
+        verts.Capacity = max * 4;
+        tris.Capacity = max * 6;
+    }
+
+    public void AddLine(Vector3 a, Vector3 b, float width)
+    {
+        Vector3 dir = (b - a).normalized;
+        Vector3 side = Vector3.Cross(Vector3.up, dir) * (width * 0.5f);
+
+        Vector3 v0 = a - side;
+        Vector3 v1 = a + side;
+        Vector3 v2 = b - side;
+        Vector3 v3 = b + side;
+
+        verts.Add(v0);
+        verts.Add(v1);
+        verts.Add(v2);
+        verts.Add(v3);
+
+        tris.Add(vertIndex + 0);
+        tris.Add(vertIndex + 1);
+        tris.Add(vertIndex + 2);
+
+        tris.Add(vertIndex + 2);
+        tris.Add(vertIndex + 1);
+        tris.Add(vertIndex + 3);
+
+        vertIndex += 4;
+    }
+
+    public void AddQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+    {
+        verts.Add(a);
+        verts.Add(b);
+        verts.Add(c);
+        verts.Add(d);
+
+        tris.Add(vertIndex + 0);
+        tris.Add(vertIndex + 1);
+        tris.Add(vertIndex + 2);
+
+        tris.Add(vertIndex + 0);
+        tris.Add(vertIndex + 2);
+        tris.Add(vertIndex + 3);
+
+        vertIndex += 4;
+    }
+}
+

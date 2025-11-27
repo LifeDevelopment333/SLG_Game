@@ -1002,6 +1002,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801524839}
   m_CullTransparentMesh: 1
+--- !u!1 &816902525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 816902527}
+  - component: {fileID: 816902526}
+  m_Layer: 0
+  m_Name: BuildGridRenderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &816902526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816902525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70af04044747e24fb09c18fa0ae9ccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
+  lineMaterials:
+  - {fileID: 2100000, guid: 631aac606079b6e458547d5bd1300c54, type: 2}
+  - {fileID: 2100000, guid: 09482cf234ea2644aa599a11bbd945d8, type: 2}
+  fillMaterials:
+  - {fileID: 2100000, guid: 631aac606079b6e458547d5bd1300c54, type: 2}
+  - {fileID: 2100000, guid: 09482cf234ea2644aa599a11bbd945d8, type: 2}
+  expandLineMaterial: {fileID: 2100000, guid: 40df99677d01123459d0790da2df9996, type: 2}
+  expandRange: 15
+  lineWidth: 1
+  heightOffset: 1
+  fillOffset: 0.01
+--- !u!4 &816902527
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816902525}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &999982517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1458,7 +1514,7 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1173060975
+--- !u!1 &1149408355
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1466,48 +1522,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1173060976}
-  - component: {fileID: 1173060977}
+  - component: {fileID: 1149408356}
   m_Layer: 0
-  m_Name: BuildGridRenderer
+  m_Name: --------------------------------- (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1173060976
+--- !u!4 &1149408356
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173060975}
+  m_GameObject: {fileID: 1149408355}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.535137, y: -16.278002, z: 2.1156092}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1173060977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173060975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e70af04044747e24fb09c18fa0ae9ccd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
-  lineMaterial: {fileID: 2100000, guid: 631aac606079b6e458547d5bd1300c54, type: 2}
-  fillMaterial: {fileID: 2100000, guid: 18b28803abf73ed45b97655952cd8274, type: 2}
-  lineWidth: 1
-  heightOffset: 1
-  fillOffset: 0.01
 --- !u!1 &1242701714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1629,6 +1666,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1242701714}
   m_CullTransparentMesh: 1
+--- !u!1 &1266764737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1266764738}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1266764738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266764737}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1312335397
 GameObject:
   m_ObjectHideFlags: 0
@@ -2026,7 +2094,7 @@ GameObject:
   - component: {fileID: 1748834313}
   - component: {fileID: 1748834312}
   m_Layer: 0
-  m_Name: "\uAC74\uBB3C \uC0DD\uC131 \uD234"
+  m_Name: BuildManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2046,7 +2114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previewMaterial: {fileID: 2100000, guid: 02f14acd82fc2ed4e92be22148488266, type: 2}
   mapData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
-  buildGridRenderer: {fileID: 1173060977}
+  buildGridRenderer: {fileID: 816902526}
 --- !u!4 &1748834313
 Transform:
   m_ObjectHideFlags: 0
@@ -2658,6 +2726,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 6e02055a0b78bad4db72a9176a1d9c60, type: 2}
+    - target: {fileID: 2856631769835551981, guid: e2263eb8af017a2418cb3cf8f430be70, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4798806386849761979, guid: e2263eb8af017a2418cb3cf8f430be70, type: 3}
       propertyPath: m_Layer
       value: 10
@@ -2746,11 +2818,13 @@ SceneRoots:
   - {fileID: 131760477}
   - {fileID: 1131094420}
   - {fileID: 636724493}
-  - {fileID: 1173060976}
   - {fileID: 657900558}
+  - {fileID: 1149408356}
   - {fileID: 1748834313}
+  - {fileID: 816902527}
   - {fileID: 2002094421}
   - {fileID: 999982521}
   - {fileID: 1051596962}
   - {fileID: 632326317}
   - {fileID: 8000847098147206196}
+  - {fileID: 1266764738}
