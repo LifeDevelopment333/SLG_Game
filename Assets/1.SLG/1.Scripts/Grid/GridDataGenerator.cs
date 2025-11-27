@@ -10,6 +10,12 @@ public class GridDataGenerator : MonoBehaviour
     private GridCell[] runtimeCells; // 그리드 생성 후 임시 저장 (Gizmos용)
 
     public bool isDebug = false;
+    public bool isReset = false;
+
+    private void Awake()
+    {
+        if (isReset) GenerateGrid();
+    }
 
     public void GenerateGrid()
     {

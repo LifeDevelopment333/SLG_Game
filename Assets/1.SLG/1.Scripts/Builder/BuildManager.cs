@@ -14,6 +14,9 @@ namespace SLG.Builder
         [Header("지형 데이터 (ScriptableObject)")]
         [SerializeField] private GridData mapData;
 
+        [Header("그리드 렌더러")]
+        [SerializeField] private BuildGridRenderer buildGridRenderer;
+
         private Camera cam;
         private GameObject previewObject;
         private Renderer previewRenderer;
@@ -23,8 +26,6 @@ namespace SLG.Builder
 
         private int curX;
         private int curZ;
-
-        [SerializeField] private BuildGridRenderer buildGridRenderer;
 
         private void Awake()
         {
@@ -37,10 +38,22 @@ namespace SLG.Builder
             if (!isBuildMode || selectBuilding == null)
                 return;
 
+            #region 키 맵핑
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 ExitBuildMode();
             }
+
+            if(Input.GetKeyDown(KeyCode.Q))
+            {
+                // 회전 역방향
+            }
+
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                // 회전 정방향
+            }
+            #endregion
 
             UpdatePreview();
         }
