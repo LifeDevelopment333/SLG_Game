@@ -20,7 +20,7 @@ public class BuildGridRenderer : MonoBehaviour
     private MeshFilter lineMF, fillMF, expandMF;
     private MeshRenderer lineMR, fillMR, expandMR;
 
-    private int previewX, previewZ, previewSize;
+    private int previewX, previewZ, previewSize, previewRot;
     private bool showGrid = false;
 
     [Header("렌더러 설정")]
@@ -52,11 +52,12 @@ public class BuildGridRenderer : MonoBehaviour
         expandMR.material = expandLineMaterial;
     }
 
-    public void ShowPreviewGrid(int x, int z, int size)
+    public void ShowPreviewGrid(int x, int z, int size, int rotation)
     {
         previewX = x;
         previewZ = z;
         previewSize = size;
+        previewRot = rotation;
 
         showGrid = true;
         GenerateMeshes();
@@ -96,8 +97,9 @@ public class BuildGridRenderer : MonoBehaviour
         {
             for (int j = 0; j < previewSize; j++)
             {
-                int gx = startX + i;
-                int gz = startZ + j;
+                RotationUtil.RotateCell(i, j, previewSize, previewRot, out int ri, out int rj);
+                int gx = startX + ri;
+                int gz = startZ + rj;
 
                 if (gx < 0 || gz < 0 || gx >= gridData.GridSize || gz >= gridData.GridSize)
                     continue;
@@ -165,8 +167,9 @@ public class BuildGridRenderer : MonoBehaviour
         {
             for (int j = 0; j < previewSize; j++)
             {
-                int gx = startX + i;
-                int gz = startZ + j;
+                RotationUtil.RotateCell(i, j, previewSize, previewRot, out int ri, out int rj);
+                int gx = startX + ri;
+                int gz = startZ + rj;
 
                 if (gx < 0 || gz < 0 || gx >= gridData.GridSize || gz >= gridData.GridSize)
                     continue;
@@ -219,6 +222,15 @@ public class BuildGridRenderer : MonoBehaviour
 
         MeshBuffer buf = new MeshBuffer(maxCount * 4);
 
+        int startX = GridUtil.GetStartX(previewX, previewSize);
+        int startZ = GridUtil.GetStartZ(previewZ, previewSize);
+
+        bool IsInPreviewArea(int gx, int gz)
+        {
+            return gx >= startX && gx < startX + previewSize &&
+                   gz >= startZ && gz < startZ + previewSize;
+        }
+
         for (int i = -range; i <= range; i++)
         {
             for (int j = -range; j <= range; j++)
@@ -232,7 +244,7 @@ public class BuildGridRenderer : MonoBehaviour
                 GridCell cell = gridData.GetCell(gx, gz);
 
                 // 프리뷰 영역 N×N은 제외
-                if (Mathf.Abs(i) < previewSize / 2 + 1 && Mathf.Abs(j) < previewSize / 2 + 1)
+                if (IsInPreviewArea(gx, gz))
                     continue;
 
                 float cs = gridData.CellSize * 0.5f;

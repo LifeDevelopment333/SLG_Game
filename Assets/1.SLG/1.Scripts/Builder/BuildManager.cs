@@ -28,6 +28,7 @@ namespace SLG.Builder
         private int curZ;
 
         private int buildingRotate = 0;
+        private Quaternion originalRotation;
 
         private void Awake()
         {
@@ -86,13 +87,15 @@ namespace SLG.Builder
             {
                 previewObject = Instantiate(selectBuilding.Prefab);
                 previewRenderer = previewObject.GetComponentInChildren<Renderer>();
+                originalRotation = previewObject.transform.rotation;
             }
 
+            Vector3 rot = originalRotation.eulerAngles;
             previewObject.transform.position = worldPos;
-            previewObject.transform.rotation = Quaternion.Euler(previewObject.transform.eulerAngles.x, buildingRotate, previewObject.transform.eulerAngles.z);
+            previewObject.transform.rotation = Quaternion.Euler(rot.x, rot.y + buildingRotate, rot.z);
 
             // 건설 가능 여부 확인
-            bool canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size);
+            bool canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size, buildingRotate);
 
             ApplyPreviewMaterial(canBuild ? Color.green : Color.red);
 
@@ -103,14 +106,15 @@ namespace SLG.Builder
             }
 
             // 그리드 보여주기
-            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size);
+            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size, buildingRotate);
         }
 
         private void PlaceBuilding(Vector3 pos)
         {
             GameObject obj = selectBuilding.CreateBuilding(pos);
+            Vector3 rot = originalRotation.eulerAngles;
             obj.transform.parent = transform;
-            obj.transform.rotation = Quaternion.Euler(obj.transform.eulerAngles.x, buildingRotate, obj.transform.eulerAngles.z);
+            obj.transform.rotation = Quaternion.Euler(rot.x, rot.y + buildingRotate, rot.z);
 
             // 점유 처리
             MarkOccupied(curX, curZ, selectBuilding.Size);
