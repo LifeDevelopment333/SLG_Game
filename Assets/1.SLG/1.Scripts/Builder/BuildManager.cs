@@ -27,6 +27,8 @@ namespace SLG.Builder
         private int curX;
         private int curZ;
 
+        private int buildingRotate = 0;
+
         private void Awake()
         {
             instance = this;
@@ -44,14 +46,16 @@ namespace SLG.Builder
                 ExitBuildMode();
             }
 
-            if(Input.GetKeyDown(KeyCode.Q))
+            // 회전 역방향
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                // 회전 역방향
+                buildingRotate = (buildingRotate - 90) % 360;
             }
 
-            if(Input.GetKeyDown(KeyCode.E))
+            // 회전 정방향
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                // 회전 정방향
+                buildingRotate = (buildingRotate + 90) % 360;
             }
             #endregion
 
@@ -85,6 +89,7 @@ namespace SLG.Builder
             }
 
             previewObject.transform.position = worldPos;
+            previewObject.transform.rotation = Quaternion.Euler(previewObject.transform.eulerAngles.x, buildingRotate, previewObject.transform.eulerAngles.z);
 
             // 건설 가능 여부 확인
             bool canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size);
@@ -105,6 +110,7 @@ namespace SLG.Builder
         {
             GameObject obj = selectBuilding.CreateBuilding(pos);
             obj.transform.parent = transform;
+            obj.transform.rotation = Quaternion.Euler(obj.transform.eulerAngles.x, buildingRotate, obj.transform.eulerAngles.z);
 
             // 점유 처리
             MarkOccupied(curX, curZ, selectBuilding.Size);
