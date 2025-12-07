@@ -17,12 +17,16 @@ namespace SLG.Builder
         [Header("그리드 렌더러")]
         [SerializeField] private BuildGridRenderer buildGridRenderer;
 
+        [Header("지형 레이어")]
+        [SerializeField] private LayerMask terrainLayer;
+
         private Camera cam;
         private GameObject previewObject;
         private Renderer previewRenderer;
 
         private BuildingData selectBuilding;
         private bool isBuildMode = false;
+        public bool IsBuildMode => isBuildMode;
 
         private int curX;
         private int curZ;
@@ -38,15 +42,10 @@ namespace SLG.Builder
 
         private void Update()
         {
-            if (!isBuildMode || selectBuilding == null)
+            if (isBuildMode == false || selectBuilding == null)
                 return;
 
             #region 키 맵핑
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                ExitBuildMode();
-            }
-
             // 회전 역방향
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -63,16 +62,11 @@ namespace SLG.Builder
             UpdatePreview();
         }
 
-        private void ExitBuildMode()
-        {
-            // 빌드모드 나가기
-        }
-
         private void UpdatePreview()
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, 500f)) return;
+            if (!Physics.Raycast(ray, out RaycastHit hit, 500f, terrainLayer)) return;
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
             // 월드 → 그리드 변환
@@ -166,6 +160,15 @@ namespace SLG.Builder
             previewObject = null;
 
             Debug.Log("Select Building: " + data.name);
+        }
+
+        /// <summary>
+        /// 빌드모드 바꾸기
+        /// </summary>
+        /// <param name="mode"> true = 빌드 모드 | false = 디스플레이 모드 </param>
+        public void ChangeMode(bool mode)
+        {
+            isBuildMode = mode;
         }
     }
 }

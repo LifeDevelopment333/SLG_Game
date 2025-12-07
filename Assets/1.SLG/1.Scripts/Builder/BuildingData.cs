@@ -20,8 +20,11 @@ namespace SLG.Builder
         /// </summary>
         public GameObject CreateBuilding(Vector3 pos)
         {
-            GameObject building = Instantiate(prefab);
-            building.transform.position = pos;
+            GameObject building = Instantiate(prefab, pos, Quaternion.identity);
+
+            Building build = building.AddComponent<Building>();
+            build.Initialize(this);
+
             return building;
         }
     }
