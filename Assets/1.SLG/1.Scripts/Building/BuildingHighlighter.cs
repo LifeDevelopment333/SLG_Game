@@ -108,14 +108,14 @@ public class BuildingHighlighter : MonoBehaviour
         hoverX = x;
         hoverZ = z;
         hoverSize = building.Data.Size;
-        hoverRot = (int)building.transform.eulerAngles.y;
+        hoverRot = NormalizeRotation(building.transform.eulerAngles.y);
 
         GenerateLineMesh();
     }
 
     public void HideHover()
     {
-
+        ClearMesh();
     }
 
     public void ShowSelect()
@@ -126,5 +126,18 @@ public class BuildingHighlighter : MonoBehaviour
     public void HideSelect()
     {
 
+    }
+
+    private int NormalizeRotation(float rot)
+    {
+        int r = Mathf.RoundToInt(rot / 90f) * 90;
+        r %= 360;
+        if (r < 0) r += 360;
+        return r;
+    }
+
+    private void ClearMesh()
+    {
+        lineMF.sharedMesh = null;
     }
 }
