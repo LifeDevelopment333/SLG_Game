@@ -17,3 +17,4 @@ MonoBehaviour:
   type: 2
   prefab: {fileID: 4602628499624567535, guid: f4c34ffa915b46644bc66274fe54fd48, type: 3}
   size: 7
+  influenceRange: 10

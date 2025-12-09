@@ -10,10 +10,12 @@ namespace SLG.Builder
         [SerializeField] private BuildingType type;
         [SerializeField] private GameObject prefab;
         [SerializeField] private int size = 1;
+        [SerializeField] private int influenceRange = 1;
 
         public GameObject Prefab => prefab;
         public int Size => size;
         public BuildingType Type => type;
+        public int InfluenceRange => influenceRange;
 
         /// <summary>
         /// 건물 생성

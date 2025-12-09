@@ -1950,7 +1950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridData: {fileID: 11400000, guid: 83c168bb3e7f6494dab64cbeb5a66afe, type: 2}
-  lineHighlightMaterial: {fileID: 2100000, guid: 40df99677d01123459d0790da2df9996, type: 2}
+  lineHighlightMaterial: {fileID: 2100000, guid: 2271c22af525a964fbaa47013e0f541c, type: 2}
   expand_lineHightlightMaterial: {fileID: 2100000, guid: 40df99677d01123459d0790da2df9996, type: 2}
   lineWidth: 1
   heightOffset: 1

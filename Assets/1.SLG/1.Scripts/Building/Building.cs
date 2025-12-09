@@ -30,7 +30,7 @@ public class Building : MonoBehaviour, IBuilding
 
     public void Select()
     {
-        BuildingHighlighter.Instance.ShowSelect();
+        BuildingHighlighter.Instance.ShowSelect(this);
     }
 
     public void DeSelect()
