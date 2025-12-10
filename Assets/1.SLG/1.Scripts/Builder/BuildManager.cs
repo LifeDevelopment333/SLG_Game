@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace SLG.Builder
 {
@@ -111,13 +113,13 @@ namespace SLG.Builder
             obj.transform.rotation = Quaternion.Euler(rot.x, rot.y + buildingRotate, rot.z);
 
             // 점유 처리
-            MarkOccupied(curX, curZ, selectBuilding.Size);
+            MarkOccupied(curX, curZ, selectBuilding.Size, true);
 
             // 건설 후 그리드 비활성화
             buildGridRenderer.HidePreviewGrid();
         }
 
-        private void MarkOccupied(int x, int z, int size)
+        private void MarkOccupied(int x, int z, int size, bool isOccupied)
         {
             int startX = GridUtil.GetStartX(x, size);
             int startZ = GridUtil.GetStartZ(z, size);
@@ -131,7 +133,7 @@ namespace SLG.Builder
 
                     int index = mapData.Index(px, pz);
                     GridCell cell = mapData.GetCell(px,pz);
-                    cell.isOccupied = true;
+                    cell.isOccupied = isOccupied;
                     mapData.Cells[index] = cell;
                 }
             }
@@ -146,6 +148,7 @@ namespace SLG.Builder
             previewRenderer.material.SetFloat("_Alpha", 0.5f);
         }
 
+        #region UI 관련 기능들
         public void SelectBuilding(BuildingData data)
         {
             selectBuilding = data;
@@ -179,5 +182,15 @@ namespace SLG.Builder
                 previewObject = null;
             }
         }
+
+        public void RemoveBuilding(Building building)
+        {
+            GridUtil.WorldToGrid(building.transform.position, out int x, out int z, mapData);
+
+            MarkOccupied(x, z, building.Data.Size, false);
+
+            Destroy(building.gameObject);
+        }
+        #endregion
     }
 }

@@ -20,12 +20,12 @@ public class Building : MonoBehaviour, IBuilding
 
     public void ReBuild()
     {
-
+        // 추후 방향성 고려
     }
 
     public void Remove()
     {
-
+        BuildManager.Instance.RemoveBuilding(this);
     }
 
     public void Select()
