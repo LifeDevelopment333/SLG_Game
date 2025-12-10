@@ -17,7 +17,15 @@ public class BuildingSelect : MonoBehaviour
 
     private void Update()
     {
-        if (BuildManager.Instance.IsBuildMode == true || EventSystem.current.IsPointerOverGameObject()) return;
+        if(BuildManager.Instance.IsBuildMode == true)
+        {
+            selectBuilding?.DeSelect();
+            hoverBuilding?.HoverExit();
+            selectBuilding = null;
+            hoverBuilding = null;
+            return;
+        }
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
         HandleHover();
         HandleClick();

@@ -9,7 +9,7 @@ public class Building : MonoBehaviour, IBuilding
     private int level = 1;
 
     // 선택 시 하이라이트 강조
-    //private BuildingHighLight highlighter;
+    //private BuildingHighLight highlighter;   
 
     public void Initialize(BuildingData data)
     {

@@ -280,6 +280,13 @@ public class BuildGridRenderer : MonoBehaviour
 
         return pos + Vector3.up * heightOffset;
     }
+
+    private void ClearGridAndMesh()
+    {
+        lineMF.sharedMesh = null;
+        fillMF.sharedMesh = null;
+        expandMF.sharedMesh = null;
+    }
 }
 
 public class MeshBuffer

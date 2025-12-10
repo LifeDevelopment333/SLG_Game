@@ -169,6 +169,15 @@ namespace SLG.Builder
         public void ChangeMode(bool mode)
         {
             isBuildMode = mode;
+
+            if(IsBuildMode == false)
+            {
+                if (previewObject != null)
+                    Destroy(previewObject);
+                // 빌드모드 해제 시 그리드 비활성화
+                buildGridRenderer.HidePreviewGrid();
+                previewObject = null;
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ public static class PlacementChecker
     {
         int startX = GridUtil.GetStartX(x, size);
         int startZ = GridUtil.GetStartZ(z, size);
-
+  
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
