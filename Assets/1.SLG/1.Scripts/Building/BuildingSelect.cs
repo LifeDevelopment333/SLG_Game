@@ -64,4 +64,12 @@ public class BuildingSelect : MonoBehaviour
             }
         }
     }
+
+    public void SelectBuildingRemove()
+    {
+        if (selectBuilding == null) return;
+
+        selectBuilding.DeSelect();
+        selectBuilding.Remove();
+    }
 }

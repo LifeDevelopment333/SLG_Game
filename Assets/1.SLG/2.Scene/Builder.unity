@@ -617,19 +617,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 296311857}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1748834312}
-        m_TargetAssemblyTypeName: SLG.Builder.BuildManager, Assembly-CSharp
-        m_MethodName: ChangeMode
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &296311857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2601,10 +2589,6 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 1024
-  ui:
-    Build: {fileID: 296311856}
-    Cancle: {fileID: 0}
-    Remove: {fileID: 1819447172}
 --- !u!4 &1748834313
 Transform:
   m_ObjectHideFlags: 0
@@ -2793,10 +2777,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1748834312}
-        m_TargetAssemblyTypeName: SLG.Builder.BuildManager, Assembly-CSharp
-        m_MethodName: ChangeMode
-        m_Mode: 6
+      - m_Target: {fileID: 1748834314}
+        m_TargetAssemblyTypeName: BuildingSelect, Assembly-CSharp
+        m_MethodName: SelectBuildingRemove
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
