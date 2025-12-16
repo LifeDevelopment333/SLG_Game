@@ -36,6 +36,7 @@ public class BuildGridRenderer : MonoBehaviour
         lineMF = lineObj.AddComponent<MeshFilter>();
         lineMR = lineObj.AddComponent<MeshRenderer>();
         lineMR.materials = lineMaterials; // 반드시 2개
+        lineMR.material.renderQueue = 2500;
 
         // 채우기
         GameObject fillObj = new GameObject("GridFill");
@@ -43,6 +44,7 @@ public class BuildGridRenderer : MonoBehaviour
         fillMF = fillObj.AddComponent<MeshFilter>();
         fillMR = fillObj.AddComponent<MeshRenderer>();
         fillMR.materials = fillMaterials; // 반드시 2개
+        fillMR.material.renderQueue = 2500;
 
         // 확장선
         GameObject expandObj = new GameObject("GridExpand");
@@ -50,6 +52,7 @@ public class BuildGridRenderer : MonoBehaviour
         expandMF = expandObj.AddComponent <MeshFilter>();
         expandMR = expandObj.AddComponent<MeshRenderer>();
         expandMR.material = expandLineMaterial;
+        expandMR.material.renderQueue = 2500;
     }
 
     public void ShowPreviewGrid(int x, int z, int size, int rotation)
@@ -244,7 +247,7 @@ public class BuildGridRenderer : MonoBehaviour
                 GridCell cell = gridData.GetCell(gx, gz);
 
                 // 프리뷰 영역 N×N은 제외
-                if (IsInPreviewArea(gx, gz))
+                if (IsInPreviewArea(gx, gz) || cell.isOccupied)
                     continue;
 
                 float cs = gridData.CellSize * 0.5f;

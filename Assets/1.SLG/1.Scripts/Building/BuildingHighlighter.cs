@@ -89,6 +89,7 @@ public class BuildingHighlighter : MonoBehaviour
         lineMF.sharedMesh = m;
     }
 
+    // 확장 영향 범위 라인 메쉬 생성
     private void GenerateExpandLineMesh()
     {
         int influence = selectInfluence;
@@ -115,6 +116,9 @@ public class BuildingHighlighter : MonoBehaviour
 
                 GridCell cell = gridData.GetCell(gx, gz);
                 Vector3 center = cell.GridPosition;
+
+                if(cell.isOccupied)
+                    continue;
 
                 float cs = gridData.CellSize * 0.5f;
 

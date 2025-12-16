@@ -11,13 +11,14 @@ namespace SLG.Builder
         [SerializeField] private GameObject prefab;
         [SerializeField] private int size = 1;
         [SerializeField] private int influenceRange = 1;
-        [SerializeField] private bool canHoldBuild = false;
+        //[SerializeField] private bool canHoldBuild = false;
+        [SerializeField] private float buildTime = 10f;
 
         public GameObject Prefab => prefab;
         public int Size => size;
         public BuildingType Type => type;
         public int InfluenceRange => influenceRange;
-        public bool CanHoldBuild => canHoldBuild;
+        //public bool CanHoldBuild => canHoldBuild;
 
         /// <summary>
         /// 건물 생성
