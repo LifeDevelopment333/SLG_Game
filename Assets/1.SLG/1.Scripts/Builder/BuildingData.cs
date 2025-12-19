@@ -18,6 +18,7 @@ namespace SLG.Builder
         public int Size => size;
         public BuildingType Type => type;
         public int InfluenceRange => influenceRange;
+        public float BuildTime => buildTime;
         //public bool CanHoldBuild => canHoldBuild;
 
         /// <summary>

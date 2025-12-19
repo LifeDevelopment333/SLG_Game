@@ -25,7 +25,4 @@ public interface IBuilding
     /// 건물 제거
     /// </summary>
     void Remove();
-
-    // 사용할지 안할지 미정
-    void ReBuild();
 }

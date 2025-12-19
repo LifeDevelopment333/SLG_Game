@@ -150,6 +150,7 @@ namespace SLG.Builder
             building.x = curX;
             building.z = curZ;
             building.size = selectBuilding.Size;
+            building.Material = originMaterial;
 
             // 프리뷰 머터리얼 적용
             Renderer renderer = obj.GetComponentInChildren<Renderer>();
@@ -169,11 +170,12 @@ namespace SLG.Builder
             for(int i = 0; i < placedPreviewList.Count; i++)
             {
                 PlacedBuilding placedBuilding = placedPreviewList[i];
-                Renderer renderer = placedBuilding.Object.GetComponentInChildren<Renderer>();
-                ApplyOriginMaterial(renderer);
+                Building building = placedBuilding.Object.GetComponent<Building>();
+                building.StartConstruction(placedBuilding);
             }
 
             placedPreviewList.Clear();
+            ChangeMode(false);
         }
 
         private void CancelPlaceBuilding()
@@ -219,10 +221,15 @@ namespace SLG.Builder
             renderer.material.SetFloat("_Alpha", 0.5f);
         }
 
-        private void ApplyOriginMaterial(Renderer renderer)
+        private void ResetPreview()
         {
-            if (renderer == null || originMaterial == null) return;
-            renderer.material = originMaterial;
+            if(previewObject != null)
+            {
+                Destroy(previewObject);
+            }
+
+            buildGridRenderer.HidePreviewGrid();
+            previewObject = null;
         }
 
         #region UI 관련 기능들
@@ -255,11 +262,7 @@ namespace SLG.Builder
 
             if(IsBuildMode == false)
             {
-                if (previewObject != null)
-                    Destroy(previewObject);
-                // 빌드모드 해제 시 그리드 비활성화
-                buildGridRenderer.HidePreviewGrid();
-                previewObject = null;
+                ResetPreview();
             }
         }
 
