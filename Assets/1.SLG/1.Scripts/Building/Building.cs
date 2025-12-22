@@ -79,8 +79,8 @@ public class Building : MonoBehaviour, IBuilding, IGameTick
         }
 
         Bounds bounds = mf.sharedMesh.bounds; // Object Space
-        minY = bounds.min.y;
-        maxY = bounds.max.y;
+        minY = bounds.min.z;
+        maxY = bounds.max.z;
     }
 
 
