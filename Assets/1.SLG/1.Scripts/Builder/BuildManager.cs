@@ -12,6 +12,7 @@ namespace SLG.Builder
 
         [Header("프리뷰 머터리얼")]
         [SerializeField] private Material previewMaterial;
+        public Material PreviewMaterial => previewMaterial;
         private Material originMaterial;
 
         [Header("지형 데이터 (ScriptableObject)")]
@@ -142,7 +143,6 @@ namespace SLG.Builder
             building.x = curX;
             building.z = curZ;
             building.size = selectBuilding.Size;
-            building.Material = originMaterial;
 
             // 프리뷰 머터리얼 적용
             Renderer renderer = obj.GetComponentInChildren<Renderer>();
@@ -206,7 +206,7 @@ namespace SLG.Builder
             }
         }
 
-        private void ApplyPreviewMaterial(Color color, Renderer renderer)
+        public void ApplyPreviewMaterial(Color color, Renderer renderer)
         {
             if (renderer == null) return;
 

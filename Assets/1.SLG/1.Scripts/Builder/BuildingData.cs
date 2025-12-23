@@ -20,6 +20,7 @@ namespace SLG.Builder
         public BuildingType Type => type;
         public int InfluenceRange => influenceRange;
         public float BuildTime => buildTime;
+        public Material OriginMaterial => prefab.GetComponentInChildren<Renderer>().sharedMaterial;
 
         /// <summary>
         /// 건물 생성

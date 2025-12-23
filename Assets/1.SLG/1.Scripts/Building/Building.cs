@@ -11,6 +11,7 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
     private float buildTimer = 0f;
     private bool isConstruction = false;
     private Renderer ConstructionRenderer;
+    private Material originMaterial;
 
     private PlacedBuilding placedBuilding = new PlacedBuilding();
 
@@ -31,15 +32,17 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
     {
         if(isConstruction)
         {
-            buildTimer += deltaTime;
+            buildTimer -= deltaTime;
 
-            float progress = Mathf.Clamp01(buildTimer / data.BuildTime);
+            float progress = Mathf.Clamp01((data.BuildTime - buildTimer) / data.BuildTime);
             ConstructionRenderer.material.SetFloat("_BuildProgress", progress);
 
-            if (buildTimer >= data.BuildTime)
+            if (buildTimer <= 0)
             {
+                buildTimer = 0f;
+
                 isConstruction = false;
-                ConstructionRenderer.material = placedBuilding.Material;
+                ConstructionRenderer.material = data.OriginMaterial;
                 ConstructionRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
                 SimulationSystem.Instance.Unregister(this);
             }
@@ -53,9 +56,15 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
 
     public void StartConstruction(PlacedBuilding placedBuilding)
     {
-        buildTimer = 0f;
-        isConstruction = true;
+        buildTimer = data.BuildTime;
         this.placedBuilding = placedBuilding;
+
+        StartConstructionRenderer();
+    }
+
+    private void StartConstructionRenderer()
+    {
+        isConstruction = true;
 
         ConstructionRenderer = transform.GetComponentInChildren<Renderer>();
 
@@ -144,6 +153,13 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         placedBuilding.x = data.gridX;
         placedBuilding.z = data.gridZ;
         placedBuilding.size = data.size;
+
+        if(buildTimer > 0)
+        {
+            Renderer renderer = transform.GetComponentInChildren<Renderer>();
+            BuildManager.Instance.ApplyPreviewMaterial(Color.white, renderer);
+            StartConstructionRenderer();
+        }
     }
     #endregion
 }

@@ -32,7 +32,6 @@ namespace SLG.RuntimeData
         public int x;
         public int z;
         public int size;
-        public Material Material;
     }
 }
 
