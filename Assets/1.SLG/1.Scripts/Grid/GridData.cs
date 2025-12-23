@@ -1,3 +1,4 @@
+using SLG.RuntimeData;
 using System;
 using UnityEngine;
 
@@ -26,12 +27,4 @@ public class GridData : ScriptableObject
     {
         return x * GridSize + z;
     }
-}
-
-[Serializable]
-public struct GridCell
-{
-    public Vector3 GridPosition;
-    public bool isBuildable;
-    public bool isOccupied;
 }

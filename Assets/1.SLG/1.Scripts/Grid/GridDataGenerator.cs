@@ -1,4 +1,6 @@
 using UnityEngine;
+using SLG.RuntimeData;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

@@ -1,5 +1,6 @@
 using NUnit.Framework.Constraints;
 using SLG.Builder;
+using SLG.RuntimeData;
 using System;
 using UnityEngine;
 

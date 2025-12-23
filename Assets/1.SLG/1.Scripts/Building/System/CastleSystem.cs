@@ -5,9 +5,14 @@ public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSave
 {
     private int level;
 
+    public bool IsInArea(int x, int z)
+    {
+        return true;
+    }
+
     public void Run()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("캐슬 작동중");
     }
 
     public void Upgrade()

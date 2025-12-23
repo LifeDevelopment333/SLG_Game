@@ -26,21 +26,6 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         buildingSystems = GetComponents<IBuildingSystem>().ToList();
     }
 
-    public void PostLoadInitialize()
-    {
-        transform.tag = "Building";
-        gameObject.layer = LayerMask.NameToLayer("Building");
-
-        buildingSystems = GetComponents<IBuildingSystem>().ToList();
-
-        if (buildTimer > 0)
-        {
-            Renderer renderer = transform.GetComponentInChildren<Renderer>();
-            BuildManager.Instance.ApplyPreviewMaterial(Color.white, renderer);
-            StartConstructionRenderer();
-        }
-    }
-
     private void OnDestroy()
     {
         SimulationSystem.Instance.Unregister(this);
@@ -63,7 +48,6 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
                 isConstruction = false;
                 ConstructionRenderer.material = data.OriginMaterial;
                 ConstructionRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                SimulationSystem.Instance.Unregister(this);
             }
             return;
         }
@@ -175,7 +159,17 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         placedBuilding.z = data.gridZ;
         placedBuilding.size = data.size;
 
-        PostLoadInitialize();
+        if (buildTimer > 0)
+        {
+            Renderer renderer = transform.GetComponentInChildren<Renderer>();
+            BuildManager.Instance.ApplyPreviewMaterial(Color.white, renderer);
+            StartConstructionRenderer();
+        }
+        else
+        {
+            isConstruction = false;
+            SimulationSystem.Instance.Register(this);
+        }
     }
     #endregion
 }

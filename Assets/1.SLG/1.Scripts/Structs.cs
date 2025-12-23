@@ -31,6 +31,14 @@ namespace SLG.SaveData
 
 namespace SLG.RuntimeData
 {
+    [Serializable]
+    public struct GridCell
+    {
+        public Vector3 GridPosition;
+        public bool isBuildable;
+        public bool isOccupied;
+    }
+
     public class PlacedBuilding
     {
         public GameObject Object;
