@@ -1,6 +1,8 @@
 using SLG.Builder;
 using SLG.RuntimeData;
 using SLG.SaveData;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingSaveData>
@@ -11,15 +13,32 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
     private float buildTimer = 0f;
     private bool isConstruction = false;
     private Renderer ConstructionRenderer;
-    private Material originMaterial;
-
     private PlacedBuilding placedBuilding = new PlacedBuilding();
+
+    private List<IBuildingSystem> buildingSystems = new List<IBuildingSystem>();
 
     public void Initialize(BuildingData data)
     {
         this.data = data;
         transform.tag = "Building";
         gameObject.layer = LayerMask.NameToLayer("Building");
+
+        buildingSystems = GetComponents<IBuildingSystem>().ToList();
+    }
+
+    public void PostLoadInitialize()
+    {
+        transform.tag = "Building";
+        gameObject.layer = LayerMask.NameToLayer("Building");
+
+        buildingSystems = GetComponents<IBuildingSystem>().ToList();
+
+        if (buildTimer > 0)
+        {
+            Renderer renderer = transform.GetComponentInChildren<Renderer>();
+            BuildManager.Instance.ApplyPreviewMaterial(Color.white, renderer);
+            StartConstructionRenderer();
+        }
     }
 
     private void OnDestroy()
@@ -49,8 +68,10 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
             return;
         }
 
-        // 건물 작동 로직
-        //
+        foreach(IBuildingSystem system in buildingSystems)
+        {
+            system.Run();
+        }
     }
     #endregion
 
@@ -154,12 +175,7 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         placedBuilding.z = data.gridZ;
         placedBuilding.size = data.size;
 
-        if(buildTimer > 0)
-        {
-            Renderer renderer = transform.GetComponentInChildren<Renderer>();
-            BuildManager.Instance.ApplyPreviewMaterial(Color.white, renderer);
-            StartConstructionRenderer();
-        }
+        PostLoadInitialize();
     }
     #endregion
 }

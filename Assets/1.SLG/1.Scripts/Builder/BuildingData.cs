@@ -1,4 +1,5 @@
 using SLG.EnumTypes;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SLG.Builder
@@ -12,7 +13,7 @@ namespace SLG.Builder
         [SerializeField] private GameObject prefab;
         [SerializeField] private int size = 1;
         [SerializeField] private int influenceRange = 1;
-        [SerializeField] private float buildTime = 10f;
+        [SerializeField] private float buildTime = 10f;        
 
         public string BuildingName => buildingName;
         public GameObject Prefab => prefab;
@@ -29,7 +30,7 @@ namespace SLG.Builder
         {
             GameObject building = Instantiate(prefab, pos, Quaternion.identity);
 
-            Building build = building.AddComponent<Building>();
+            Building build = building.GetOrAddComponent<Building>();
             build.Initialize(this);
 
             return building;

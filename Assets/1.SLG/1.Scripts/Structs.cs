@@ -22,6 +22,11 @@ namespace SLG.SaveData
 
         public float buildTimer;
     }
+
+    public struct CastleSaveData
+    {
+        public int level;
+    }
 }
 
 namespace SLG.RuntimeData
