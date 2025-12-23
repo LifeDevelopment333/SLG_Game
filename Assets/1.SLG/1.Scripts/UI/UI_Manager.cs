@@ -8,6 +8,8 @@ public class UI_Manager : MonoBehaviour
 
     [SerializeField] private Button createModeButton;
     [SerializeField] private Button displayModeButton;
+    [SerializeField] private Button saveButton;
+    [SerializeField] private Button loadButton;
 
     private bool isCreateMode = false;
     private bool isDisplayMode = false;
@@ -27,6 +29,12 @@ public class UI_Manager : MonoBehaviour
 
         if(displayModeButton != null)
             displayModeButton.onClick.AddListener(OnClickDisplayModeButton);
+
+        if(saveButton != null)
+            saveButton.onClick.AddListener(OnClickSaveButton);
+
+        if(loadButton != null)
+            loadButton.onClick.AddListener(OnClickLoadButton);
     }
 
     private void Reset()
@@ -45,5 +53,15 @@ public class UI_Manager : MonoBehaviour
     {
         isDisplayMode = true;
         isCreateMode = false;
+    }
+
+    private void OnClickSaveButton()
+    {
+        SaveSystem.SaveGame();
+    }
+
+    private void OnClickLoadButton()
+    {
+        SaveSystem.LoadGame();
     }
 }

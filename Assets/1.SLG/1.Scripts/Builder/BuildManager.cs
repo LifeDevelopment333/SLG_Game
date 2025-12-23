@@ -1,10 +1,7 @@
-using NUnit.Framework;
-using System;
+using SLG.RuntimeData;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using static SLG.Builder.BuildManager;
 
 namespace SLG.Builder
 {
@@ -19,6 +16,7 @@ namespace SLG.Builder
 
         [Header("지형 데이터 (ScriptableObject)")]
         [SerializeField] private GridData mapData;
+        public GridData Mapdata => mapData;
 
         [Header("그리드 렌더러")]
         [SerializeField] private BuildGridRenderer buildGridRenderer;
@@ -44,15 +42,9 @@ namespace SLG.Builder
         private bool canBuild;
 
         private List<PlacedBuilding> placedPreviewList = new List<PlacedBuilding>();
+        private List<Building> buildings = new List<Building>();
 
-        public struct PlacedBuilding
-        {
-            public GameObject Object;
-            public int x;
-            public int z;
-            public int size;
-            public Material Material;
-        }
+        public IReadOnlyList<Building> Buildings => buildings;
 
         private void Awake()
         {
@@ -172,6 +164,8 @@ namespace SLG.Builder
                 PlacedBuilding placedBuilding = placedPreviewList[i];
                 Building building = placedBuilding.Object.GetComponent<Building>();
                 building.StartConstruction(placedBuilding);
+
+                buildings.Add(building);
             }
 
             placedPreviewList.Clear();
@@ -192,7 +186,7 @@ namespace SLG.Builder
         }
 
         // 점유처리
-        private void MarkOccupied(int x, int z, int size, bool isOccupied)
+        public void MarkOccupied(int x, int z, int size, bool isOccupied)
         {
             int startX = GridUtil.GetStartX(x, size);
             int startZ = GridUtil.GetStartZ(z, size);
@@ -272,7 +266,29 @@ namespace SLG.Builder
 
             MarkOccupied(x, z, building.Data.Size, false);
 
+            buildings.Remove(building);
             Destroy(building.gameObject);
+        }
+        #endregion
+
+        #region Save & Load
+        public void ClearAll()
+        {
+            foreach (Building building in buildings)
+            {
+                GridUtil.WorldToGrid(building.transform.position, out int x, out int z, mapData);
+
+                MarkOccupied(x, z, building.Data.Size, false);
+
+                Destroy(building.gameObject);
+            }
+
+            buildings.Clear();
+        }
+
+        public void AddBuilding(Building data)
+        {
+            buildings.Add(data);
         }
         #endregion
     }

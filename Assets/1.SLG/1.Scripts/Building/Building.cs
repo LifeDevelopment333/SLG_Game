@@ -1,24 +1,29 @@
 using SLG.Builder;
-using System.Transactions;
+using SLG.RuntimeData;
+using SLG.SaveData;
 using UnityEngine;
 
-public class Building : MonoBehaviour, IBuilding, IGameTick
+public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingSaveData>
 {
     private BuildingData data;
     public BuildingData Data => data;
-    private int level = 1;
 
     private float buildTimer = 0f;
     private bool isConstruction = false;
     private Renderer ConstructionRenderer;
 
-    private BuildManager.PlacedBuilding placedBuilding;
+    private PlacedBuilding placedBuilding = new PlacedBuilding();
 
     public void Initialize(BuildingData data)
     {
         this.data = data;
         transform.tag = "Building";
         gameObject.layer = LayerMask.NameToLayer("Building");
+    }
+
+    private void OnDestroy()
+    {
+        SimulationSystem.Instance.Unregister(this);
     }
 
     #region IGameTick 구현
@@ -46,7 +51,7 @@ public class Building : MonoBehaviour, IBuilding, IGameTick
     }
     #endregion
 
-    public void StartConstruction(BuildManager.PlacedBuilding placedBuilding)
+    public void StartConstruction(PlacedBuilding placedBuilding)
     {
         buildTimer = 0f;
         isConstruction = true;
@@ -114,6 +119,31 @@ public class Building : MonoBehaviour, IBuilding, IGameTick
     public void HoverExit()
     {
         BuildingHighlighter.Instance.HideHover();
+    }
+
+    public BuildingSaveData SaveData()
+    {
+        BuildingSaveData data = new BuildingSaveData();
+
+        data.id = this.data.BuildingName;
+
+        data.gridX = placedBuilding.x;
+        data.gridZ = placedBuilding.z;
+        data.rotate = transform.eulerAngles;
+        data.size = placedBuilding.size;
+
+        data.buildTimer = buildTimer;
+
+        return data;
+    }
+
+    public void LoadData(BuildingSaveData data)
+    {
+        buildTimer = data.buildTimer;
+
+        placedBuilding.x = data.gridX;
+        placedBuilding.z = data.gridZ;
+        placedBuilding.size = data.size;
     }
     #endregion
 }
