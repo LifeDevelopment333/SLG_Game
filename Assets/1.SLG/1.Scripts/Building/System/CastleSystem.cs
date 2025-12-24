@@ -3,7 +3,21 @@ using UnityEngine;
 
 public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSaveData>
 {
+    private Building building;
+
     private int level;
+
+    public void Initialize(Building building)
+    {
+        this.building = building;
+
+        AreaSystem.Instance.Register(this);
+    }
+
+    private void OnDestroy()
+    {
+        AreaSystem.Instance.Unregister(this);
+    }
 
     public bool IsInArea(int x, int z)
     {

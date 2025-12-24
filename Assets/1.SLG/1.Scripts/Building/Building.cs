@@ -24,6 +24,11 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         gameObject.layer = LayerMask.NameToLayer("Building");
 
         buildingSystems = GetComponents<IBuildingSystem>().ToList();
+
+        foreach (IBuildingSystem system in buildingSystems)
+        {
+            system.Initialize(this);
+        }
     }
 
     private void OnDestroy()
@@ -121,12 +126,14 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
 
     public void Upgrade()
     {
-
+        foreach (IBuildingSystem system in buildingSystems)
+        {
+            system.Upgrade();
+        }
     }
 
     public void HoverEnter()
     {
-        Debug.Log("Hover Enter Building: " + data.name);
         BuildingHighlighter.Instance.ShowHover(this);
     }
 
