@@ -94,34 +94,27 @@ public class BuildingHighlighter : MonoBehaviour
     private void GenerateExpandLineMesh()
     {
         int influence = selectInfluence;
+        int maxCount = (influence * 2 + 1) * (influence * 2 + 1);
 
-        // 1. 건물 실제 타일 시작점
-        int startX = GridUtil.GetStartX(selectX, selectSize);
-        int startZ = GridUtil.GetStartZ(selectZ, selectSize);
+        MeshBuffer buffer = new MeshBuffer(maxCount * 4);
 
-        // 2. 전체 포함 범위 계산
-        int minX = startX - influence;
-        int maxX = startX + (selectSize - 1) + influence;
-
-        int minZ = startZ - influence;
-        int maxZ = startZ + (selectSize - 1) + influence;
-
-        MeshBuffer buffer = new MeshBuffer((maxX - minX + 1) * (maxZ - minZ + 1));
-
-        for (int gx = minX; gx <= maxX; gx++)
+        for (int i = -influence; i <= influence; i++)
         {
-            for (int gz = minZ; gz <= maxZ; gz++)
+            for (int j = -influence; j <= influence; j++)
             {
+                int gx = selectX + i;
+                int gz = selectZ + j;
+
                 if (gx < 0 || gx >= gridData.GridSize || gz < 0 || gz >= gridData.GridSize)
                     continue;
 
                 GridCell cell = gridData.GetCell(gx, gz);
-                Vector3 center = cell.GridPosition;
 
                 if(cell.isOccupied)
                     continue;
 
                 float cs = gridData.CellSize * 0.5f;
+                Vector3 center = cell.GridPosition;
 
                 Vector3 A = Ray(center + new Vector3(-cs, 0, -cs));
                 Vector3 B = Ray(center + new Vector3(+cs, 0, -cs));

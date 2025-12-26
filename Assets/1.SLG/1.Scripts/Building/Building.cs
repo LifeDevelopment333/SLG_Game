@@ -14,6 +14,7 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
     private bool isConstruction = false;
     private Renderer ConstructionRenderer;
     private PlacedBuilding placedBuilding = new PlacedBuilding();
+    public PlacedBuilding PlacedBuilding => placedBuilding;
 
     private List<IBuildingSystem> buildingSystems = new List<IBuildingSystem>();
 
@@ -25,6 +26,11 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
 
         buildingSystems = GetComponents<IBuildingSystem>().ToList();
 
+        SystemInitialize();
+    }
+
+    private void SystemInitialize()
+    {
         foreach (IBuildingSystem system in buildingSystems)
         {
             system.Initialize(this);

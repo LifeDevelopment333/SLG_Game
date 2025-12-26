@@ -56,12 +56,13 @@ public class BuildGridRenderer : MonoBehaviour
         expandMR.material.renderQueue = 2500;
     }
 
-    public void ShowPreviewGrid(int x, int z, int size, int rotation)
+    public void ShowPreviewGrid(int x, int z, int size, int rotation, int range)
     {
         previewX = x;
         previewZ = z;
         previewSize = size;
         previewRot = rotation;
+        expandRange = range;
 
         showGrid = true;
         GenerateMeshes();
@@ -229,12 +230,6 @@ public class BuildGridRenderer : MonoBehaviour
         int startX = GridUtil.GetStartX(previewX, previewSize);
         int startZ = GridUtil.GetStartZ(previewZ, previewSize);
 
-        bool IsInPreviewArea(int gx, int gz)
-        {
-            return gx >= startX && gx < startX + previewSize &&
-                   gz >= startZ && gz < startZ + previewSize;
-        }
-
         for (int i = -range; i <= range; i++)
         {
             for (int j = -range; j <= range; j++)
@@ -247,8 +242,7 @@ public class BuildGridRenderer : MonoBehaviour
 
                 GridCell cell = gridData.GetCell(gx, gz);
 
-                // 프리뷰 영역 N×N은 제외
-                if (IsInPreviewArea(gx, gz) || cell.isOccupied)
+                if (cell.isOccupied)
                     continue;
 
                 float cs = gridData.CellSize * 0.5f;

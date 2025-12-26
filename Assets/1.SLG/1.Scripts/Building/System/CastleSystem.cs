@@ -6,10 +6,13 @@ public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSave
     private Building building;
 
     private int level;
+    private int influenceRange;
 
     public void Initialize(Building building)
     {
         this.building = building;
+
+        influenceRange = building.Data.InfluenceRange;
 
         AreaSystem.Instance.Register(this);
     }
@@ -21,7 +24,24 @@ public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSave
 
     public bool IsInArea(int x, int z)
     {
-        return true;
+        int cx = building.PlacedBuilding.x;
+        int cz = building.PlacedBuilding.z;
+
+        int range = influenceRange;
+
+        for (int i = -range; i <= range; i++)
+        {
+            for (int j = -range; j <= range; j++)
+            {
+                int gx = cx + i;
+                int gz = cz + j;
+
+                if (gx == x && gz == z)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     public void Run()
@@ -36,11 +56,15 @@ public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSave
 
     public CastleSaveData SaveData()
     {
-        throw new System.NotImplementedException();
+        CastleSaveData saveData = new CastleSaveData();
+
+        saveData.level = level;
+
+        return saveData;
     }
 
     public void LoadData(CastleSaveData data)
     {
-        throw new System.NotImplementedException();
+
     }
 }

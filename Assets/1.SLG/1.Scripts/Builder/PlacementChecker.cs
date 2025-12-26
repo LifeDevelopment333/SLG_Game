@@ -10,7 +10,7 @@ public static class PlacementChecker
     /// <param name="data"></param>
     /// <param name="size"></param>
     /// <returns></returns>
-    public static bool CanBuild(int x, int z, GridData data, int size, int rotation)
+    public static bool CanBuild(int x, int z, GridData data, int size, int rotation, bool checkArea)
     {
         int startX = GridUtil.GetStartX(x, size);
         int startZ = GridUtil.GetStartZ(z, size);
@@ -31,6 +31,12 @@ public static class PlacementChecker
 
                 if (!cell.isBuildable) return false;
                 if (cell.isOccupied) return false;
+
+                if(checkArea)
+                {
+                    if (AreaSystem.Instance.IsInAnyBuildArea(px, pz) == false)
+                        return false;
+                }
             }
         }
 

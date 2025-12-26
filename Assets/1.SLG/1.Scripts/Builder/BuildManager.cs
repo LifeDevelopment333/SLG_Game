@@ -103,12 +103,12 @@ namespace SLG.Builder
             previewObject.transform.rotation = Quaternion.Euler(rot.x, rot.y + buildingRotate, rot.z);
 
             // 건설 가능 여부 확인
-            canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size, buildingRotate);
+            canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size, buildingRotate, selectBuilding.IsAreaRestricted);
 
             ApplyPreviewMaterial(canBuild ? Color.green : Color.red, previewRenderer);
 
             // 그리드 보여주기
-            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size, buildingRotate);
+            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size, buildingRotate, selectBuilding.InfluenceRange);
         }
 
         private void TryPlacedPreview()
