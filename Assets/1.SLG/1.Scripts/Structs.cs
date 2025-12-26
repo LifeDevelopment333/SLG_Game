@@ -46,6 +46,13 @@ namespace SLG.RuntimeData
         public int z;
         public int size;
     }
+
+    public struct AreaSource
+    {
+        public int x;
+        public int z;
+        public int range;
+    }
 }
 
 namespace SLG.EnumTypes

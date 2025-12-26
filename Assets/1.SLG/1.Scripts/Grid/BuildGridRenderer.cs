@@ -18,11 +18,13 @@ public class BuildGridRenderer : MonoBehaviour
     [Header("확장 범위 설정")]
     public int expandRange = 10;
 
-    private MeshFilter lineMF, fillMF, expandMF;
-    private MeshRenderer lineMR, fillMR, expandMR;
+    private MeshFilter lineMF, fillMF, expandMF, areaMF;
+    private MeshRenderer lineMR, fillMR, expandMR, areaMR;
 
     private int previewX, previewZ, previewSize, previewRot;
     private bool showGrid = false;
+
+    private List<AreaSource> areaSources = new List<AreaSource>();
 
     [Header("렌더러 설정")]
     public float lineWidth = 0.05f;
@@ -54,6 +56,14 @@ public class BuildGridRenderer : MonoBehaviour
         expandMR = expandObj.AddComponent<MeshRenderer>();
         expandMR.material = expandLineMaterial;
         expandMR.material.renderQueue = 2500;
+
+        // 성 영역
+        GameObject areaObj = new GameObject("GridArea");
+        areaObj.transform.SetParent(transform, false);
+        areaMF = areaObj.AddComponent<MeshFilter>();
+        areaMR = areaObj.AddComponent<MeshRenderer>();
+        areaMR.material = expandLineMaterial;
+        areaMR.material.renderQueue = 2500;
     }
 
     public void ShowPreviewGrid(int x, int z, int size, int rotation, int range)
@@ -66,6 +76,13 @@ public class BuildGridRenderer : MonoBehaviour
 
         showGrid = true;
         GenerateMeshes();
+    }
+
+    public void ShowCastleAreas(List<AreaSource> areas)
+    {
+        areaSources = areas;
+        showGrid = true;
+        GenerateExpandMesh_Multi();
     }
 
     public void HidePreviewGrid()
@@ -83,6 +100,59 @@ public class BuildGridRenderer : MonoBehaviour
         GenerateLineMesh_SubMesh();
         GenerateFillMesh_SubMesh();
         GenerateFillMesh_ExpandMesh();
+    }
+
+    private void GenerateExpandMesh_Multi()
+    {
+        MeshBuffer buf = new MeshBuffer(1024);
+
+        HashSet<int> visited = new HashSet<int>();
+
+        foreach (var area in areaSources)
+        {
+            int cx = area.x;
+            int cz = area.z;
+            int range = area.range;
+
+            for (int i = -range; i <= range; i++)
+            {
+                for (int j = -range; j <= range; j++)
+                {
+                    int gx = cx + i;
+                    int gz = cz + j;
+
+                    if (gx < 0 || gz < 0 ||
+                        gx >= gridData.GridSize || gz >= gridData.GridSize)
+                        continue;
+
+                    int key = gridData.Index(gx, gz);
+                    if (!visited.Add(key))
+                        continue; // 이미 그린 셀
+
+                    GridCell cell = gridData.GetCell(gx, gz);
+
+                    float cs = gridData.CellSize * 0.5f;
+                    Vector3 center = cell.GridPosition;
+
+                    Vector3 A = Ray(center + new Vector3(-cs, 0, -cs));
+                    Vector3 B = Ray(center + new Vector3(+cs, 0, -cs));
+                    Vector3 C = Ray(center + new Vector3(+cs, 0, +cs));
+                    Vector3 D = Ray(center + new Vector3(-cs, 0, +cs));
+
+                    buf.AddLine(A, B, lineWidth);
+                    buf.AddLine(B, C, lineWidth);
+                    buf.AddLine(C, D, lineWidth);
+                    buf.AddLine(D, A, lineWidth);
+                }
+            }
+        }
+
+        Mesh m = new Mesh();
+        m.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        m.SetVertices(buf.verts);
+        m.SetTriangles(buf.tris, 0);
+
+        areaMF.sharedMesh = m;
     }
 
     /// <summary>
@@ -344,4 +414,5 @@ public class MeshBuffer
         vertIndex += 4;
     }
 }
+
 

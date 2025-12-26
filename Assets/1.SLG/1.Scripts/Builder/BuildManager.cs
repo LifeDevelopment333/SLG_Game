@@ -47,6 +47,8 @@ namespace SLG.Builder
 
         public IReadOnlyList<Building> Buildings => buildings;
 
+        private List<AreaSource> cachesAreas = new List<AreaSource>();
+
         private void Awake()
         {
             instance = this;
@@ -109,6 +111,18 @@ namespace SLG.Builder
 
             // 그리드 보여주기
             buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size, buildingRotate, selectBuilding.InfluenceRange);
+
+            cachesAreas.Clear();
+            foreach (var castle in AreaSystem.Instance.Castles)
+            {
+                cachesAreas.Add(new AreaSource
+                {
+                    x = castle.Building.PlacedBuilding.x,
+                    z = castle.Building.PlacedBuilding.z,
+                    range = castle.InfluenceRange
+                });
+            }
+            buildGridRenderer.ShowCastleAreas(cachesAreas);
         }
 
         private void TryPlacedPreview()

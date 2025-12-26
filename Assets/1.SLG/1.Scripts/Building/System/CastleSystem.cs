@@ -4,9 +4,12 @@ using UnityEngine;
 public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSaveData>
 {
     private Building building;
+    public Building Building => building;
 
     private int level;
     private int influenceRange;
+
+    public int InfluenceRange => influenceRange;
 
     public void Initialize(Building building)
     {

@@ -7,6 +7,7 @@ public class AreaSystem : MonoBehaviour
     public static AreaSystem Instance => instance;
 
     private List<CastleSystem> systemList = new List<CastleSystem>();
+    public IReadOnlyList<CastleSystem> Castles => systemList;
 
     private void Awake()
     {
