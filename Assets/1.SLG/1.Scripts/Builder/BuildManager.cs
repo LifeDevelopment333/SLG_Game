@@ -110,7 +110,7 @@ namespace SLG.Builder
             ApplyPreviewMaterial(canBuild ? Color.green : Color.red, previewRenderer);
 
             // 그리드 보여주기
-            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size, buildingRotate, selectBuilding.InfluenceRange);
+            buildGridRenderer.ShowPreviewGrid(curX, curZ, selectBuilding.Size, buildingRotate, selectBuilding.InfluenceRange, selectBuilding.IsAreaRestricted);
 
             cachesAreas.Clear();
             foreach (var castle in AreaSystem.Instance.Castles)

@@ -23,6 +23,7 @@ public class BuildGridRenderer : MonoBehaviour
 
     private int previewX, previewZ, previewSize, previewRot;
     private bool showGrid = false;
+    private bool checkArea = false;
 
     private List<AreaSource> areaSources = new List<AreaSource>();
 
@@ -66,13 +67,14 @@ public class BuildGridRenderer : MonoBehaviour
         areaMR.material.renderQueue = 2500;
     }
 
-    public void ShowPreviewGrid(int x, int z, int size, int rotation, int range)
+    public void ShowPreviewGrid(int x, int z, int size, int rotation, int range, bool checkArea)
     {
         previewX = x;
         previewZ = z;
         previewSize = size;
         previewRot = rotation;
         expandRange = range;
+        this.checkArea = checkArea;
 
         showGrid = true;
         GenerateMeshes();
@@ -91,6 +93,7 @@ public class BuildGridRenderer : MonoBehaviour
         lineMF.mesh = null;
         fillMF.mesh = null;
         expandMF.mesh = null;
+        areaMF.mesh = null;
     }
 
     private void GenerateMeshes()
@@ -181,6 +184,10 @@ public class BuildGridRenderer : MonoBehaviour
 
                 GridCell cell = gridData.GetCell(gx, gz);
                 bool canBuild = (cell.isBuildable && !cell.isOccupied);
+                if(checkArea)
+                {
+                    canBuild &= AreaSystem.Instance.IsInAnyBuildArea(gx, gz);
+                }
                 MeshBuffer buffer = canBuild ? green : red;
 
                 float cs = gridData.CellSize * 0.5f;
@@ -251,6 +258,11 @@ public class BuildGridRenderer : MonoBehaviour
 
                 GridCell cell = gridData.GetCell(gx, gz);
                 bool canBuild = (cell.isBuildable && !cell.isOccupied);
+                if (checkArea)
+                {
+                    canBuild &= AreaSystem.Instance.IsInAnyBuildArea(gx, gz);
+                }
+
                 MeshBuffer buffer = canBuild ? green : red;
 
                 float cs = gridData.CellSize * 0.5f;
