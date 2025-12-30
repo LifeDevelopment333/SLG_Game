@@ -1,14 +1,12 @@
 using SLG.SaveData;
 using UnityEngine;
 
-public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSaveData>
+public class CastleSystem : MonoBehaviour, IBuildingSystem
 {
     private Building building;
-    public Building Building => building;
-
-    private int level;
     private int influenceRange;
 
+    public Building Building => building;
     public int InfluenceRange => influenceRange;
 
     public void Initialize(Building building)
@@ -27,6 +25,8 @@ public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSave
 
     public bool IsInArea(int x, int z)
     {
+        if (building.IsConstruction == true) return false;
+
         int cx = building.PlacedBuilding.x;
         int cz = building.PlacedBuilding.z;
 
@@ -52,22 +52,19 @@ public class CastleSystem : MonoBehaviour, IBuildingSystem, ISaveData<CastleSave
         Debug.Log("캐슬 작동중");
     }
 
-    public void Upgrade()
+    public void Upgrade(int level)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public CastleSaveData SaveData()
-    {
-        CastleSaveData saveData = new CastleSaveData();
-
-        saveData.level = level;
-
-        return saveData;
-    }
-
-    public void LoadData(CastleSaveData data)
-    {
-
+        switch(level)
+        {
+            case 1:
+                influenceRange = 20;
+                break;
+            case 2:
+                influenceRange = 50;
+                break;
+            case 3:
+                influenceRange = 80;
+                break;
+        }
     }
 }

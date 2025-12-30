@@ -2,6 +2,8 @@ using UnityEngine;
 
 public interface IBuilding
 {
+    int Level { get; }
+
     /// <summary>
     /// 건물 선택
     /// </summary>

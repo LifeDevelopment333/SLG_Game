@@ -72,4 +72,19 @@ public class BuildingSelect : MonoBehaviour
         selectBuilding.DeSelect();
         selectBuilding.Remove();
     }
+
+    public void SelectBuildingUpgrade()
+    {
+        if(selectBuilding == null) return;
+
+        if(selectBuilding.CanUpgrade())
+        {
+            selectBuilding.Upgrade();
+            Debug.Log("건물 업그레이드 완료");
+        }
+        else
+        {
+            Debug.Log("건물 업그레이드 실패");
+        }
+    }
 }

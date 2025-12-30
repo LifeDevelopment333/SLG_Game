@@ -14,9 +14,13 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
     private bool isConstruction = false;
     private Renderer ConstructionRenderer;
     private PlacedBuilding placedBuilding = new PlacedBuilding();
-    public PlacedBuilding PlacedBuilding => placedBuilding;
-
     private List<IBuildingSystem> buildingSystems = new List<IBuildingSystem>();
+
+    private int level = 1;
+    public int Level => level;
+
+    public bool IsConstruction => isConstruction;
+    public PlacedBuilding PlacedBuilding => placedBuilding;
 
     public void Initialize(BuildingData data)
     {
@@ -113,7 +117,6 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         maxY = bounds.max.z;
     }
 
-
     #region IBuilding 구현
     public void Remove()
     {
@@ -130,11 +133,29 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
         BuildingHighlighter.Instance.HideSelect();
     }
 
+    public bool CanUpgrade()
+    {
+        var cost = data.GetUpgradeCost(level);
+
+        if (cost == null) return false;
+
+        return ResourceManager.Instance.CanConsume(cost);
+    }
+
     public void Upgrade()
     {
+        var cost = data.GetUpgradeCost(level);
+        if (cost == null) return;
+
+        if (ResourceManager.Instance.CanConsume(cost) == false) return;
+
+        ResourceManager.Instance.Consume(cost);
+
+        level++;
+
         foreach (IBuildingSystem system in buildingSystems)
         {
-            system.Upgrade();
+            system.Upgrade(level);
         }
     }
 
@@ -154,6 +175,8 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
 
         data.id = this.data.BuildingName;
 
+        data.level = this.level;
+
         data.gridX = placedBuilding.x;
         data.gridZ = placedBuilding.z;
         data.rotate = transform.eulerAngles;
@@ -167,6 +190,8 @@ public class Building : MonoBehaviour, IBuilding, IGameTick, ISaveData<BuildingS
     public void LoadData(BuildingSaveData data)
     {
         buildTimer = data.buildTimer;
+
+        level = data.level;
 
         placedBuilding.x = data.gridX;
         placedBuilding.z = data.gridZ;

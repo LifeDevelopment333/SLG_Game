@@ -17,6 +17,24 @@ MonoBehaviour:
   type: 2
   prefab: {fileID: 5514665615501215690, guid: 68d69ef256011cf4ea7860c67ce54e0b, type: 3}
   size: 7
-  influenceRange: 10
+  influenceRange: 20
   buildTime: 10
   isAreaRestricted: 0
+  buildCost: []
+  upgradeCost:
+  - cost:
+    - type: 0
+      amount: 150
+    - type: 1
+      amount: 50
+    - type: 3
+      amount: 3000
+  - cost:
+    - type: 0
+      amount: 300
+    - type: 1
+      amount: 100
+    - type: 2
+      amount: 10
+    - type: 3
+      amount: 3000

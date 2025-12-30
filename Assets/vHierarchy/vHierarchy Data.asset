@@ -26,6 +26,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-1595471862-0
         - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-2028405413-0
         - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-1266764737-0
+        - globalObjectIdString: GlobalObjectId_V1-2-0fb389d0b0831fa489b2a16fb80cc031-113968736-0
         values:
         - colorIndex: 9
           iconNameOrGuid: Folder Icon
@@ -53,6 +54,10 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 7
           iconNameOrGuid: Settings Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 4
+          iconNameOrGuid: cs Script Icon
           isIconRecursive: 0
           isColorRecursive: 0
     - goDatas_byGlobalId:

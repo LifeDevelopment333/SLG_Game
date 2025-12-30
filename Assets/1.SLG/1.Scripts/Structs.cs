@@ -1,3 +1,4 @@
+using SLG.EnumTypes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,17 +16,14 @@ namespace SLG.SaveData
     {
         public string id;
 
+        public int level;
+
         public int gridX;
         public int gridZ;
         public int size;
         public Vector3 rotate;
 
         public float buildTimer;
-    }
-
-    public struct CastleSaveData
-    {
-        public int level;
     }
 }
 
@@ -53,6 +51,19 @@ namespace SLG.RuntimeData
         public int z;
         public int range;
     }
+
+    [Serializable]
+    public struct UpgradeCost
+    {
+        public List<ResourceCost> cost;
+    }
+
+    [Serializable]
+    public struct ResourceCost
+    {
+        public ResourceType type;
+        public int amount;
+    }
 }
 
 namespace SLG.EnumTypes
@@ -64,5 +75,14 @@ namespace SLG.EnumTypes
         방어,
         공격,
         유닛
+    }
+
+    public enum ResourceType
+    {
+        나무,
+        돌,
+        광석,
+        골드,
+        식량,
     }
 }

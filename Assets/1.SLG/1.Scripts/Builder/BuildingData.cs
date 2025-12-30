@@ -1,4 +1,6 @@
 using SLG.EnumTypes;
+using SLG.RuntimeData;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -31,14 +33,51 @@ namespace SLG.Builder
         [Header("건설 시 영향")]
         [SerializeField] private bool isAreaRestricted = true;
 
+        [Header("건설 시 비용")]
+        [SerializeField] private List<ResourceCost> buildCost = new List<ResourceCost>();
+
+        [Header("업그레이드 비용")]
+        [SerializeField] private List<UpgradeCost> upgradeCost = new List<UpgradeCost>();
+
+        private Material originMaterial;
+
         public string BuildingName => buildingName;
         public GameObject Prefab => prefab;
         public int Size => size;
         public BuildingType Type => type;
         public int InfluenceRange => influenceRange;
         public float BuildTime => buildTime;
-        public Material OriginMaterial => prefab.GetComponentInChildren<Renderer>().sharedMaterial;
+        public Material OriginMaterial
+        {
+            get
+            {
+                if (originMaterial == null)
+                    originMaterial = prefab.GetComponentInChildren<Renderer>().sharedMaterial;
+                return originMaterial;
+            }
+        }
         public bool IsAreaRestricted => isAreaRestricted;
+
+        public Dictionary<ResourceType, int> GetBuildCost()
+        {
+            Dictionary<ResourceType, int> dic = new();
+            foreach (var cost in buildCost)
+                dic[cost.type] = cost.amount;
+
+            return dic;
+        }
+
+        public Dictionary<ResourceType, int> GetUpgradeCost(int currentLevel)
+        {
+            if (currentLevel < 0 || currentLevel >= upgradeCost.Count)
+                return null;
+
+            Dictionary<ResourceType, int> dic = new();
+            foreach(var cost in upgradeCost[currentLevel].cost)
+                dic[cost.type] = cost.amount;
+
+            return dic;
+        }
 
         /// <summary>
         /// 건물 생성

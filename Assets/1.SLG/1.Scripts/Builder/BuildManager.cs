@@ -171,7 +171,8 @@ namespace SLG.Builder
             return building;
         }
 
-        private void ApplyPlaceBuilding()
+        // 프리뷰 건물들 건설
+        public void ApplyPlaceBuilding()
         {
             for(int i = 0; i < placedPreviewList.Count; i++)
             {
