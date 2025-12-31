@@ -174,6 +174,19 @@ namespace SLG.Builder
         // 프리뷰 건물들 건설
         public void ApplyPlaceBuilding()
         {
+            if (placedPreviewList.Count <= 0) return;
+
+            var singleCost = selectBuilding.GetBuildCost();
+            var totalCost = ResourceManager.Instance.MultiplyCost(singleCost, placedPreviewList.Count);
+
+            if(ResourceManager.Instance.CanConsume(totalCost) == false)
+            {
+                Debug.Log("자원이 부족합니다.");
+                return;
+            }
+
+            ResourceManager.Instance.Consume(totalCost);
+
             for(int i = 0; i < placedPreviewList.Count; i++)
             {
                 PlacedBuilding placedBuilding = placedPreviewList[i];

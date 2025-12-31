@@ -284,6 +284,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4ad18982e47e574281d3f4c5b826566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initResources:
+  - type: 0
+    amount: 10000
+  - type: 1
+    amount: 10000
+  - type: 2
+    amount: 10000
+  - type: 3
+    amount: 10000
+  - type: 4
+    amount: 10000
 --- !u!4 &113968738
 Transform:
   m_ObjectHideFlags: 0

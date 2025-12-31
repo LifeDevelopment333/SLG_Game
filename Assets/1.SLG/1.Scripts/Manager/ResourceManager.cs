@@ -1,4 +1,6 @@
 using SLG.EnumTypes;
+using SLG.RuntimeData;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +11,10 @@ public class ResourceManager : MonoBehaviour
 
     private Dictionary<ResourceType, int> resources = new Dictionary<ResourceType, int>();
 
+    public List<ResourceCost> initResources;
+
+    public event Action<ResourceType, int> OnResourceChanged;
+
     private void Awake()
     {
         if(instance != null)
@@ -17,6 +23,13 @@ public class ResourceManager : MonoBehaviour
             return;
         }
         instance = this;
+
+        // 초기 생성되는 자원 Load시 문제 발생 시 제거필요
+        foreach(var resource in initResources)
+        {
+            resources[resource.type] = resource.amount;
+            OnResourceChanged?.Invoke(resource.type, resource.amount);
+        }
     }
 
     public int Get(ResourceType type)
@@ -50,7 +63,10 @@ public class ResourceManager : MonoBehaviour
     public void Consume(Dictionary<ResourceType, int> cost)
     {
         foreach (var pair in cost)
+        {
             resources[pair.Key] -= pair.Value;
+            OnResourceChanged?.Invoke(pair.Key, resources[pair.Key]);
+        }
     }
 
     public bool Spend(ResourceType type, int amount)
@@ -58,7 +74,22 @@ public class ResourceManager : MonoBehaviour
         if (CanSpend(type, amount) == false) return false;
 
         resources[type] -= amount;
+        OnResourceChanged?.Invoke(type, resources[type]);
 
         return true;
     }
+
+    // 멀티 자원 계산
+    public Dictionary<ResourceType, int> MultiplyCost(Dictionary<ResourceType, int> baseCost, int count)
+    {
+        Dictionary<ResourceType, int> result = new();
+
+        foreach (var pair in baseCost)
+        {
+            result[pair.Key] = pair.Value * count;
+        }
+
+        return result;
+    }
+
 }
