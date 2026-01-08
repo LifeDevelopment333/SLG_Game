@@ -39,6 +39,9 @@ namespace SLG.Builder
         [Header("업그레이드 비용")]
         [SerializeField] private List<UpgradeCost> upgradeCost = new List<UpgradeCost>();
 
+        [Header("자원건물용")]
+        [SerializeField] private List<ResourceProduceData> resourceProduceDatas = new List<ResourceProduceData>();
+
         private Material originMaterial;
 
         public string BuildingName => buildingName;
@@ -77,6 +80,19 @@ namespace SLG.Builder
                 dic[cost.type] = cost.amount;
 
             return dic;
+        }
+
+        public ResourceProduceData GetResourceProduceData(int level)
+        {
+            int index = level - 1;
+
+            if(resourceProduceDatas == null || 
+                index > resourceProduceDatas.Count || index < 0)
+            {
+                throw new System.Exception($"건물 {buildingName}의 레벨 {level}에 해당하는 자원 생산 데이터가 없습니다.");
+            }
+
+            return resourceProduceDatas[index];
         }
 
         /// <summary>

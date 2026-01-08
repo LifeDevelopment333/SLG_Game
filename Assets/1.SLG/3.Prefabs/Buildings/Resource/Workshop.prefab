@@ -14,15 +14,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -67,6 +67,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 781684606622269469}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5604018880802524819}
   m_SourcePrefab: {fileID: 100100000, guid: 5573396f6b8833f4dbd78bbb53d56df5, type: 3}
 --- !u!1 &8076685762411665524 stripped
 GameObject:
@@ -94,3 +97,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.7468944, y: 6.6208663, z: 4.661953}
   m_Center: {x: 0, y: 0, z: 1.5239178}
+--- !u!114 &5604018880802524819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8076685762411665524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0f2f01cb2cbbd243aef00bfb5a68518, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2

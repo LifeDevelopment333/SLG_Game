@@ -72,6 +72,13 @@ namespace SLG.RuntimeData
         public ResourceType type;
         public int amount;
     }
+
+    [Serializable]
+    public struct ResourceProduceData
+    {
+        public float interval;
+        public int amount;
+    }
 }
 
 namespace SLG.EnumTypes

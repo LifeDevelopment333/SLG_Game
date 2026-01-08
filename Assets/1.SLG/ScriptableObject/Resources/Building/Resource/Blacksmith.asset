@@ -13,7 +13,41 @@ MonoBehaviour:
   m_Name: Blacksmith
   m_EditorClassIdentifier: 
   buildingName: Blacksmith
-  description: "\uB300\uC7A5\uAC04"
-  type: 0
+  description: "\uCC44\uC11D\uC7A5"
+  type: 1
   prefab: {fileID: 5566406258337446964, guid: 5958c5cf3cca640448c0a4727fba8cb8, type: 3}
-  size: 3
+  size: 4
+  influenceRange: 0
+  buildTime: 10
+  isAreaRestricted: 1
+  buildCost:
+  - type: 0
+    amount: 120
+  - type: 1
+    amount: 40
+  - type: 3
+    amount: 200
+  upgradeCost:
+  - cost:
+    - type: 0
+      amount: 300
+    - type: 1
+      amount: 120
+    - type: 3
+      amount: 600
+  - cost:
+    - type: 0
+      amount: 600
+    - type: 1
+      amount: 240
+    - type: 2
+      amount: 80
+    - type: 3
+      amount: 1800
+  resourceProduceDatas:
+  - interval: 5
+    amount: 2
+  - interval: 5
+    amount: 3
+  - interval: 5
+    amount: 5

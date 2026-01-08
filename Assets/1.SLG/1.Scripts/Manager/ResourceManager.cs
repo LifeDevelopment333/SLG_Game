@@ -47,7 +47,8 @@ public class ResourceManager : MonoBehaviour , ISaveData<ResourceSaveData>
 
     public void Add(ResourceType type, int amount)
     {
-        resources[type] = amount;
+        resources[type] += amount;
+        OnResourceChanged?.Invoke(type, resources[type]);
     }
 
     public bool CanSpend(ResourceType type, int amount)

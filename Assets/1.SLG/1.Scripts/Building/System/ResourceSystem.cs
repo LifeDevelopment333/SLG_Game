@@ -1,17 +1,35 @@
 using SLG.EnumTypes;
 using UnityEngine;
 
-public class ResourceSystem : MonoBehaviour
+public class ResourceSystem : MonoBehaviour , IBuildingSystem
 {
-    [SerializeField] private ResourceType Resource;
+    [SerializeField] private ResourceType type;
 
-    void Start()
+    private Building building;
+
+    private int level;
+    private float timer;
+
+    public void Initialize(Building building)
     {
-        
+        this.building = building;
+        level = building.Level;
     }
 
-    void Update()
+    public void Run()
     {
-        
+        timer += Time.deltaTime;
+
+        if (timer >= building.Data.GetResourceProduceData(level).interval)
+        {
+            timer -= building.Data.GetResourceProduceData(level).interval;
+
+            ResourceManager.Instance.Add(type, building.Data.GetResourceProduceData(level).amount);
+        }
+    }
+
+    public void Upgrade(int level)
+    {
+        this.level = level;
     }
 }
