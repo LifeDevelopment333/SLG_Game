@@ -1,4 +1,5 @@
 using SLG.EnumTypes;
+using SLG.RuntimeData;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace SLG.SaveData
     public struct SaveData
     {
         public List<BuildingSaveData> buildings;
+        public ResourceSaveData resources;
     }
 
     [Serializable]
@@ -24,6 +26,12 @@ namespace SLG.SaveData
         public Vector3 rotate;
 
         public float buildTimer;
+    }
+
+    [Serializable]
+    public struct ResourceSaveData
+    {
+        public List<ResourceCost> resources;
     }
 }
 

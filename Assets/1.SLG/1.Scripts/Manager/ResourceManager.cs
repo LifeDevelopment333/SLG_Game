@@ -1,18 +1,23 @@
 using SLG.EnumTypes;
 using SLG.RuntimeData;
+using SLG.SaveData;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
+public class ResourceManager : MonoBehaviour , ISaveData<ResourceSaveData>
 {
     private static ResourceManager instance;
     public static ResourceManager Instance => instance;
 
+    // 현재 자원
     private Dictionary<ResourceType, int> resources = new Dictionary<ResourceType, int>();
+    public IReadOnlyDictionary<ResourceType, int> Resources => resources;
 
+    // 초기 자원 설정
     public List<ResourceCost> initResources;
 
+    // 이벤트
     public event Action<ResourceType, int> OnResourceChanged;
 
     private void Awake()
@@ -23,9 +28,12 @@ public class ResourceManager : MonoBehaviour
             return;
         }
         instance = this;
+    }
 
+    private void Start()
+    {
         // 초기 생성되는 자원 Load시 문제 발생 시 제거필요
-        foreach(var resource in initResources)
+        foreach (var resource in initResources)
         {
             resources[resource.type] = resource.amount;
             OnResourceChanged?.Invoke(resource.type, resource.amount);
@@ -92,4 +100,27 @@ public class ResourceManager : MonoBehaviour
         return result;
     }
 
+    public ResourceSaveData SaveData()
+    {
+        ResourceSaveData data = new ResourceSaveData();
+        data.resources = new List<ResourceCost>();
+        foreach (var pair in resources)
+        {
+            ResourceCost resourceCost = new ResourceCost();
+            resourceCost.type = pair.Key;
+            resourceCost.amount = pair.Value;
+            data.resources.Add(resourceCost);
+        }
+        return data;
+    }
+
+    public void LoadData(ResourceSaveData data)
+    {
+        resources.Clear();
+        foreach (var resource in data.resources)
+        {
+            resources[resource.type] = resource.amount;
+            OnResourceChanged?.Invoke(resource.type, resource.amount);
+        }
+    }
 }

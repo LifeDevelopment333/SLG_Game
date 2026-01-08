@@ -1,4 +1,5 @@
 using SLG.Builder;
+using SLG.RuntimeData;
 using SLG.SaveData;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,9 @@ public static class SaveSystem
             data.buildings.Add(building.SaveData());
         }
 
+        data.resources = new ResourceSaveData();
+        data.resources = ResourceManager.Instance.SaveData();
+
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(path, json);
     }
@@ -34,6 +38,7 @@ public static class SaveSystem
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
         // 로직구현
+        #region 빌딩 관련
         BuildManager.Instance.ClearAll();
 
         foreach (BuildingSaveData loadData in data.buildings)
@@ -54,6 +59,11 @@ public static class SaveSystem
 
             BuildManager.Instance.MarkOccupied(loadData.gridX, loadData.gridZ, buildingData.Size, true);
         }
+        #endregion
+
+        #region 리소스
+        ResourceManager.Instance.LoadData(data.resources);
+        #endregion
 
         Debug.Log("Load Compelete");
     }
