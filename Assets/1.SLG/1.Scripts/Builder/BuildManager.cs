@@ -88,8 +88,14 @@ namespace SLG.Builder
             if (!GridUtil.WorldToGrid(hit.point, out curX, out curZ, mapData))
                 return;
 
+
             // 그리드 → 월드 위치 (Terrain 중심)
             worldPos = GridUtil.GridToWorld(curX, curZ, mapData);
+
+            // 건물 크기 보정
+            float offset = (selectBuilding.Size % 2 == 0) ? 0.5f : 0f;
+            worldPos.x += offset * mapData.CellSize;
+            worldPos.z += offset * mapData.CellSize;
 
             // 프리뷰 오브젝트 생성
             if (previewObject == null)

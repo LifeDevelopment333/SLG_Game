@@ -49,6 +49,11 @@ public static class SaveSystem
             // 빌딩 월드포지션 찾기
             Vector3 worldPos = GridUtil.GridToWorld(loadData.gridX, loadData.gridZ, BuildManager.Instance.Mapdata);
 
+            // 빌딩 크기 보정
+            float offset = (buildingData.Size % 2 == 0) ? 0.5f : 0f;
+            worldPos.x += offset * BuildManager.Instance.Mapdata.CellSize;
+            worldPos.z += offset * BuildManager.Instance.Mapdata.CellSize;
+
             GameObject buildObject = buildingData.CreateBuilding(worldPos);
             buildObject.transform.localEulerAngles = loadData.rotate;
             Building building = buildObject.GetComponent<Building>();
