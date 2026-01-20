@@ -10,14 +10,24 @@ public class ResourceSystem : MonoBehaviour , IBuildingSystem
     private int level;
     private float timer;
 
+    private UnitSystem unitSystem;
+
     public void Initialize(Building building)
     {
         this.building = building;
         level = building.Level;
+
+        unitSystem = GetComponent<UnitSystem>();
     }
 
     public void Run()
     {
+        if(unitSystem == null || unitSystem.HasWorkingUnit())
+        {
+            Debug.Log("일하는 유닛이 있어 자원 생산이 중지됩니다.");
+            return;
+        }
+
         timer += Time.deltaTime;
 
         if (timer >= building.Data.GetResourceProduceData(level).interval)

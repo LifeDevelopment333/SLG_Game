@@ -79,6 +79,32 @@ namespace SLG.RuntimeData
         public float interval;
         public int amount;
     }
+
+    #region 유닛시스템
+    [Serializable]
+    public class UnitSlot
+    {
+        public int index;
+        public UnitData unit;
+
+        public bool isEmpty => unit == null;
+    }
+
+    [Serializable]
+    public class UnitData
+    {
+        public int id;
+        public UnitType type;
+        //public int level;
+        //public int attack;
+        //public int defense;
+        //public float attackSpeed;
+        //public float moveSpeed;
+        //public int maxHP;
+        public int foodCost;
+        //public float workEfiiciency;
+    }
+    #endregion
 }
 
 namespace SLG.EnumTypes
@@ -99,5 +125,12 @@ namespace SLG.EnumTypes
         광석,
         골드,
         식량,
+    }
+
+    public enum UnitType
+    {
+        Worker,
+        Warrior,
+        Archer
     }
 }
