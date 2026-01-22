@@ -24,7 +24,7 @@ public class ResourceSystem : MonoBehaviour , IBuildingSystem
     {
         if(unitSystem == null || unitSystem.HasWorkingUnit())
         {
-            Debug.Log("일하는 유닛이 있어 자원 생산이 중지됩니다.");
+            Debug.Log("일하는 유닛이 없어 자원 생산이 중지됩니다.");
             return;
         }
 
