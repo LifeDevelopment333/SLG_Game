@@ -25,6 +25,9 @@ namespace SLG.Builder
         [Header("지형 레이어")]
         [SerializeField] private LayerMask terrainLayer;
 
+        [Header("건물 회전 UI")]
+        [SerializeField] Turn Turn;
+
         private Camera cam;
         private GameObject previewObject;
         private Renderer previewRenderer;
@@ -57,7 +60,7 @@ namespace SLG.Builder
 
         private void Update()
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            //if (EventSystem.current.IsPointerOverGameObject()) return;
             if (isBuildMode == false || selectBuilding == null)
                 return;
 
@@ -104,11 +107,15 @@ namespace SLG.Builder
                 previewRenderer = previewObject.GetComponentInChildren<Renderer>();
                 originMaterial = previewRenderer.material;
                 originalRotation = previewObject.transform.rotation;
+
+                Turn.Set(selectBuilding.Size);
             }
 
             Vector3 rot = originalRotation.eulerAngles;
             previewObject.transform.position = worldPos;
             previewObject.transform.rotation = Quaternion.Euler(rot.x, rot.y + buildingRotate, rot.z);
+
+            Turn.UpdatePosition(worldPos);
 
             // 건설 가능 여부 확인
             canBuild = PlacementChecker.CanBuild(curX, curZ, mapData, selectBuilding.Size, buildingRotate, selectBuilding.IsAreaRestricted);
@@ -217,6 +224,8 @@ namespace SLG.Builder
             }
 
             placedPreviewList.Clear();
+
+            Turn.Clear();
         }
 
         // 점유처리
@@ -246,7 +255,7 @@ namespace SLG.Builder
 
             renderer.material = previewMaterial;
             renderer.material.SetColor("_TintColor", color);
-            renderer.material.SetFloat("_Alpha", 0.5f);
+            renderer.material.SetFloat("_Alpha", 0.8f);
         }
 
         private void ResetPreview()
@@ -258,6 +267,8 @@ namespace SLG.Builder
 
             buildGridRenderer.HidePreviewGrid();
             previewObject = null;
+
+            Turn.Clear();
         }
 
         #region UI 관련 기능들
