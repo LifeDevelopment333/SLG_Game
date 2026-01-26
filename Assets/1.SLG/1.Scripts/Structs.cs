@@ -133,4 +133,10 @@ namespace SLG.EnumTypes
         Warrior,
         Archer
     }
+
+    public enum DayState
+    {
+        Day,
+        Night
+    }
 }

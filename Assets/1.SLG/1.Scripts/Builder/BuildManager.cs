@@ -60,7 +60,7 @@ namespace SLG.Builder
 
         private void Update()
         {
-            //if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             if (isBuildMode == false || selectBuilding == null)
                 return;
 

@@ -115,8 +115,8 @@ public class RTSCameraController : MonoBehaviour
         Vector3 rightFlat = Quaternion.Euler(0, _targetYaw, 0) * Vector3.right;
         Vector3 move = (forwardFlat * wasd.y + rightFlat * wasd.x) * (moveSpeed * mult) * dt;
 
-        if (Input.GetKey(KeyCode.Q)) move += Vector3.down * moveSpeed * 0.6f * dt;
-        if (Input.GetKey(KeyCode.E)) move += Vector3.up * moveSpeed * 0.6f * dt;
+        //if (Input.GetKey(KeyCode.Q)) move += Vector3.down * moveSpeed * 0.6f * dt;
+        //if (Input.GetKey(KeyCode.E)) move += Vector3.up * moveSpeed * 0.6f * dt;
 
         _targetPos += move;
 

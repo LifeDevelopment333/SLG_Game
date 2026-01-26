@@ -13,8 +13,6 @@ public class Turn : MonoBehaviour
     {
         mainCam = Camera.main;
         rect = GetComponent<RectTransform>();
-
-        Clear();
     }
 
     /// <summary>
@@ -38,8 +36,6 @@ public class Turn : MonoBehaviour
         buildingPosition = _position;
         Vector3 screenPos = mainCam.WorldToScreenPoint(buildingPosition);
         rect.position = screenPos;
-
-        Debug.Log("UI 위치 업데이트");
     }
 
     /// <summary>
