@@ -10,6 +10,8 @@ public class Option : MonoBehaviour
     private void Start()
     {
         ExitButton.onClick.AddListener(OnClickExitButton);
+        SaveButton.onClick.AddListener(OnClickSaveButton);
+        LoadButton.onClick.AddListener(OnClickLoadButton);
     }
 
     public void OnClickExitButton()

@@ -45,6 +45,16 @@ namespace SLG.Builder
             return names;
         }
 
+        public List<Sprite> GetAllBuildingIcons()
+        {
+            List<Sprite> icons = new List<Sprite>();
+            foreach (var data in dataList)
+            {
+                icons.Add(data.Icon);
+            }
+            return icons;
+        }
+
         public BuildingData GetBuildingDataByName(string name)
         {
             foreach (var data in dataList)

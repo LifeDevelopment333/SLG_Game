@@ -12,7 +12,7 @@ public class GameTimeSystem : MonoBehaviour
     public float DeltaTime => isPause ? 0f : Time.deltaTime * timeScale;
     public float TimeScale => timeScale;
     public bool IsPause => isPause;
-
+         
     private void Awake()
     {
         instance = this;

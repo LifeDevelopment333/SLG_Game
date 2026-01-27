@@ -15,6 +15,9 @@ namespace SLG.Builder
         [Header("건물 설명")]
         [SerializeField] private string description;
 
+        [Header("건물 아이콘")]
+        public Sprite Icon;
+
         [Header("건물 타입")]
         [SerializeField] private BuildingType type;
 
