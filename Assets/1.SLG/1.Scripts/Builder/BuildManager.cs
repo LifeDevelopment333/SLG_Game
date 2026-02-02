@@ -151,10 +151,10 @@ namespace SLG.Builder
                 CancelPlaceBuilding();
             }
 
-            if(Input.GetKeyDown(KeyCode.B))
-            {
-                ApplyPlaceBuilding();
-            }
+            //if(Input.GetKeyDown(KeyCode.B))
+            //{
+            //    ApplyPlaceBuilding();
+            //}
         }
 
         private PlacedBuilding PlaceBuildingPreview(Vector3 pos)
@@ -185,9 +185,9 @@ namespace SLG.Builder
         }
 
         // 프리뷰 건물들 건설
-        public void ApplyPlaceBuilding()
+        public bool ApplyPlaceBuilding()
         {
-            if (placedPreviewList.Count <= 0) return;
+            if (placedPreviewList.Count <= 0) return false;
 
             var singleCost = selectBuilding.GetBuildCost();
             var totalCost = ResourceManager.Instance.MultiplyCost(singleCost, placedPreviewList.Count);
@@ -195,7 +195,7 @@ namespace SLG.Builder
             if(ResourceManager.Instance.CanConsume(totalCost) == false)
             {
                 Debug.Log("자원이 부족합니다.");
-                return;
+                return false;
             }
 
             ResourceManager.Instance.Consume(totalCost);
@@ -211,6 +211,7 @@ namespace SLG.Builder
 
             placedPreviewList.Clear();
             ChangeMode(false);
+            return true;
         }
 
         private void CancelPlaceBuilding()

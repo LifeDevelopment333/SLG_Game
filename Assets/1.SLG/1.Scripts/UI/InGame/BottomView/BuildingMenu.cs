@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class BuildingMenu : MonoBehaviour
 {
+    [SerializeField] private BuildPopup buildPopup;
     [SerializeField] private List<Button> buildingSelectButtons = new List<Button>();
     [SerializeField] private Button PrevButton;
     [SerializeField] private Button NextButton;
@@ -87,10 +88,15 @@ public class BuildingMenu : MonoBehaviour
         ProgressbarRect.sizeDelta = new Vector2(newWidth, ProgressbarRect.sizeDelta.y);
     }
 
+    // 빌딩 아이콘 클릭 시
     private void SeletectBuildingMenu(int index)
     {
         int selectedIndex = page * itemsPerPage + index;
 
-        Debug.Log($"Selected Building: {buildingNames[selectedIndex]}");
+        // 빌딩 선택
+        BuildingData data = LoadBuildingData.Instance.GetBuildingDataByName(buildingNames[selectedIndex]);
+        BuildManager.Instance.SelectBuilding(data);
+
+        buildPopup.OpenPopup(data);
     }
 }

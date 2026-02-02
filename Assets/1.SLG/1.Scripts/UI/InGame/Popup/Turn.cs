@@ -9,12 +9,6 @@ public class Turn : MonoBehaviour
 
     private Vector3 buildingPosition;
 
-    private void Start()
-    {
-        mainCam = Camera.main;
-        rect = GetComponent<RectTransform>();
-    }
-
     /// <summary>
     /// UI 설정
     /// </summary>
@@ -23,6 +17,16 @@ public class Turn : MonoBehaviour
         size = _size * (0.3f / 7f);
 
         gameObject.SetActive(true);
+
+        if(mainCam == null)
+        {
+            mainCam = Camera.main;
+        }
+
+        if(rect == null)
+        {
+            rect = GetComponent<RectTransform>();
+        }
     }
 
     /// <summary>

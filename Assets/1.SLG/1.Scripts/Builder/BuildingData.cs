@@ -48,6 +48,7 @@ namespace SLG.Builder
         private Material originMaterial;
 
         public string BuildingName => buildingName;
+        public string Description => description;
         public GameObject Prefab => prefab;
         public int Size => size;
         public BuildingType Type => type;
